@@ -1,0 +1,49 @@
+Executive summary
+-----------------
+
+This distribution contains code to reproduce the results in:
+    Elliptical slice Sampling
+    Iain Murray, Ryan P. Adams and David J.C. MacKay
+    Published in AISTATS 2010.
+
+Although this looks like a large code dump, the entire method proposed by the
+paper is implemented in the short stand-alone function:
+
+    gppu_elliptical.m
+
+See documentation therein for more information. The rest of the code is all for
+constructing the comparison in the paper. We are particularly grateful to
+Michalis Titsias for providing his code for comparison.
+
+
+Distribution
+------------
+
+gppu_elliptical.m and other code written by the authors of the paper is
+available under the standard MIT license. However, various other files by other
+authors are included. For full attributions and license terms see COPYING.
+
+
+Running the experiments
+-----------------------
+
+The experiment runs are large and many, and will require substantial time,
+memory and disk to reproduce. This is only because we had enough machines so
+that we could do this easily and it made a nice noiseless figure. Much shorter
+runs would probably do for many purposes.
+
+You will need to obtain the datasets we used:
+loadBinaryUSPS.m from http://www.gaussianprocess.org/gpml/data/ requires
+that you download usps_resampled.mat into the data directory.
+You can create data/synthetic.mat by running gen_synthetic.m
+
+Dependencies:
+-------------
+
+As it says in the paper, we ran this code on Matlab 7.8. Somewhat earlier
+versions will work, but 7.x is probably required. It should all work in recent
+versions of Octave too, although this hasn't been tested for a while. Some of
+the code to run the experiments may depend on Un*x (Linux/Mac) in a trivial way.
+
+effective_size_rcoda.m depends on R and R-CODA being installed and in your path.
+We don't have a Windows machine with R to get the system calls working there.

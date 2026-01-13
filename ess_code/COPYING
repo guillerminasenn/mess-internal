@@ -1,0 +1,86 @@
+Most of the code in this distribution is attributed to one or more authors. The
+code in this directory -- EXCEPT within the titsias subdirectory -- that is
+unattributed (mainly uninteresting code to set up our particular experiments)
+was written by Iain Murray and Ryan P. Adams.
+
+The code written by us may be used freely under the standard, permissive MIT
+license, copied below. However, some of the code is written by other authors and
+distributed under different terms. Full details are given in the rest of this
+file.
+
+-------------------------------------------------------------------------------
+    The standard MIT License for gppu_elliptical.m and other code in this
+    distribution that was written by Iain Murray and/or Ryan P. Adams.
+    http://www.opensource.org/licenses/mit-license.php
+-------------------------------------------------------------------------------
+    Copyright (c) 2010 Iain Murray, Ryan P. Adams
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to
+    deal in the Software without restriction, including without limitation the
+    rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+    IN THE SOFTWARE.
+-------------------------------------------------------------------------------
+
+
+The code in the titsias subdirectory *except* minimize.m is copyright Michalis
+Titsias. Michalis has graciously allowed us to include this code for academic
+use, as a record of what we ran to perform the comparison in our paper. However,
+we cannot give you permission to further distribute it. Obtain the canonical
+version from Michalis:
+    http://www.cs.man.ac.uk/~mtitsias/software.html
+    http://www.cs.man.ac.uk/~mtitsias/code/gpsampv10.tar.gz
+
+Michalis does not include minimize.m in his distribution, we do for convenience.
+It is subject to different terms:
+
+-------------------------------------------------------------------------------
+License for minimize.m from
+http://www.kyb.tuebingen.mpg.de/bs/people/carl/code/minimize/
+-------------------------------------------------------------------------------
+    (C) Copyright 1999 - 2006, Carl Edward Rasmussen
+
+    Permission is granted for anyone to copy, use, or modify these
+    programs and accompanying documents for purposes of research or
+    education, provided this copyright notice is retained, and note is
+    made of any changes that have been made.
+
+    These programs and documents are distributed without any warranty,
+    express or implied.  As the programs were written for research
+    purposes only, they have not been tested to the degree that would be
+    advisable in any important application.  All use of these programs is
+    entirely at the user's own risk.
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+License for solve_chol.m and loadBinaryUSPS.m from
+http://www.gaussianprocess.org/gpml/code/
+-------------------------------------------------------------------------------
+    Copyright (c) 2005 - 2007 by Carl Edward Rasmussen and Chris Williams
+
+    Permission is granted for anyone to copy, use, or modify these programs for
+    purposes of research or education, provided this copyright notice is
+    retained, and note is made of any changes that have been made.
+
+    These programs are distributed without any warranty, express or implied. As
+    these programs were written for research purposes only, they have not been
+    tested to the degree that would be advisable in any important application.
+    All use of these programs is entirely at the user's own risk.
+
+    The code and associated documentation are avaiable from
+
+    http://www.GaussianProcess.org/gpml/code
+-------------------------------------------------------------------------------
+
