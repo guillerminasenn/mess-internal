@@ -1,6 +1,6 @@
 # README_context.md
 
-# mess: Minimal Elliptical Slice Sampling
+# mess: Multiproposal Elliptical Slice Sampling
 
 This repository implements **Elliptical Slice Sampling (ESS)** and its
 generalization **MESS** for Bayesian inference with **Gaussian priors**
