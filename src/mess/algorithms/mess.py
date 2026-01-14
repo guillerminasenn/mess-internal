@@ -31,13 +31,14 @@ def mess_step(x, problem, rng, M=1):
     phi_max = 2 * np.pi
 
     # Shrink interval until acceptance
+    nr_intervals = 0
     while True:
         # Sample M angles
         phi_vector = rng.uniform(phi_min, phi_max, size=M)
 
         # Compute the proposals
         x_prop_vector = (
-            problem.prior_mean()
+            problem.prior_mean()[:, np.newaxis]
             + np.cos(phi_vector - alpha) * x_centered[:, np.newaxis]
             + np.sin(phi_vector - alpha) * nu_centered[:, np.newaxis]
         )
@@ -56,9 +57,11 @@ def mess_step(x, problem, rng, M=1):
 
             # Sample uniformly among the valid proposals
             i = rng.choice(A)
-            return x_prop_vector[:, i]
+            return x_prop_vector[:, i], nr_intervals
 
         # Otherwise, shrink the angle interval
-        phi_min = np.max(phi_min, phi_vector[np.where(phi_vector < alpha)])
-        phi_max = np.min(phi_max, phi_vector[np.where(phi_vector >= alpha)])
+        phi_min = np.max(np.concatenate([np.array([phi_min]), phi_vector[np.where(phi_vector < alpha)]]))
+        phi_max = np.min(np.concatenate([np.array([phi_max]), phi_vector[np.where(phi_vector >= alpha)]]))
 
+        # Count the number of shrinking steps
+        nr_intervals += 1
