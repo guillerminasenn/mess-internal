@@ -85,15 +85,16 @@ def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam
 
             # Sample the proposal using a transition matrix computed with lp
             if use_lp:
-
+                psi = np.concatenate([phi_vector[A], np.array([alpha])])
+                psi_sorted = np.sort(psi)
+                
                 # Compute the distance matrix
                 if distance_metric== 'angular':
-                    psi = np.concatenate([phi_vector[A], np.array([alpha])])
-                    psi_sorted = np.sort(psi)
                     abs_angular_dist= np.abs(psi_sorted[:, None] - psi_sorted[None, :])
                     D = np.minimum(abs_angular_dist, 2 * np.pi - abs_angular_dist)
 
                 elif distance_metric== 'euclidean':
+                    # Think if the psi needs to be sorted according to angles, or if i need to sort the vector of proposals according to their euclidean values
                     print("Euclidean distance not implemented yet for MESS.")
 
                 # Compute the transition matrix
