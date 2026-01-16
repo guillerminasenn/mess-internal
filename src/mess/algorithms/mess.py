@@ -2,8 +2,9 @@
 
 # algorithms/mess.py
 import numpy as np
+from .utils import solve_transition_lp
 
-def mess_step(x, problem, rng, M=1):
+def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam=0.1, P0=None):
     """Perform a MESS step.
     Parameters
     ----------
@@ -15,7 +16,34 @@ def mess_step(x, problem, rng, M=1):
         Random number generator.
     M : int
         Number of proposals to generate.
+    use_lp : bool
+        If True, compute the entries of the transition matrix using
+        linear programming. If False, split probability evenly across
+        candidate proposals.
+    distance_metric: string
+        Specifies the distance metric used to compute the distance
+        between candidate proposals. Use 'angular' for great-circle 
+        angular distance between angles and 'euclidean' for Euclidean 
+        distance between the corresponding proposals.
+    lam : float
+        Weight parameter in the regularization term of the objective
+        function in lp.
+    P0 : np.ndarray or None
+        Initial doubly stochastic matrix for the transition probabilities.
+        If None, a uniform matrix with zero diagonal is used.
+
+    Returns
+    -------
+    x_new : np.ndarray
+        New state after the MESS step.
+    nr_intervals : int
+        Number of shrinking steps performed.
+    P1 : np.ndarray
+        Transition matrix used to sample the new state (only if lp=True).
     """
+    # Initialize transition matrix to None
+    P1 = None
+
     # Center the current state and the auxiliary sample from the prior
     x_centered = x - problem.prior_mean()
     nu_centered = problem.sample_prior(rng) - problem.prior_mean() 
@@ -55,9 +83,42 @@ def mess_step(x, problem, rng, M=1):
         # If there are valid proposals, select one and return
         if len(A) > 0:
 
+            # Sample the proposal using a transition matrix computed with lp
+            if use_lp:
+
+                # Compute the distance matrix
+                if distance_metric== 'angular':
+                    psi = np.concatenate([phi_vector[A], np.array([alpha])])
+                    psi_sorted = np.sort(psi)
+                    abs_angular_dist= np.abs(psi_sorted[:, None] - psi_sorted[None, :])
+                    D = np.minimum(abs_angular_dist, 2 * np.pi - abs_angular_dist)
+
+                elif distance_metric== 'euclidean':
+                    print("Euclidean distance not implemented yet for MESS.")
+
+                # Compute the transition matrix
+
+                # If not specified, use the initial doubly stochastic matrix (uniform, zero diagonal)
+                if P0 is None:
+                    P0 = np.ones((len(A) + 1 , len(A) + 1)) / (len(A))
+                np.fill_diagonal(P0, 0)
+
+                # Solve
+                P1 = solve_transition_lp(D, P0, lam=lam, verbose=False)
+                
+                # Sample i according to the row of P1 corresponding to the current state
+                current_index = np.where(psi_sorted == alpha)[0][0]
+                row_P1 = P1[current_index, :]
+
+                # Remove index corresponding to the current state
+                row_P1 = np.delete(row_P1, current_index)
+                i = rng.choice(A, p=row_P1)
+
             # Sample uniformly among the valid proposals
-            i = rng.choice(A)
-            return x_prop_vector[:, i], nr_intervals
+            else:
+                i = rng.choice(A)
+
+            return x_prop_vector[:, i], nr_intervals, P1
 
         # Otherwise, shrink the angle interval
         phi_min = np.max(np.concatenate([np.array([phi_min]), phi_vector[np.where(phi_vector < alpha)]]))
