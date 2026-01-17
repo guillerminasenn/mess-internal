@@ -329,3 +329,110 @@ def plot_ess_histograms(ess_values, ess_per_minute_values, figsize=(12, 6),
     }
     
     return summary
+
+def compute_squared_jumping_distance(chain):
+    """
+    Compute the squared jumping distance for an MCMC chain.
+    
+    The squared jumping distance is the squared Euclidean distance between
+    consecutive samples in the chain.
+    
+    Parameters:
+    -----------
+    chain : array-like
+        1D or 2D array of MCMC samples. If 2D, rows are samples and columns are parameters.
+        
+    Returns:
+    --------
+    sjd : array
+        Squared jumping distances. If chain is 1D, returns a 1D array of length N-1.
+        If chain is 2D, returns a 1D array of length N-1 with the squared distance
+        computed across all parameters.
+    """
+    chain = np.asarray(chain)
+    
+    if len(chain.shape) == 1:
+        # For 1D chains, squared jumping distance is just squared differences
+        sjd = np.diff(chain) ** 2
+    elif len(chain.shape) == 2:
+        # For 2D chains, compute Euclidean distance between consecutive samples
+        diffs = np.diff(chain, axis=0)
+        sjd = np.sum(diffs ** 2, axis=1)
+    else:
+        raise ValueError("Chain must be 1D or 2D")
+    
+    return sjd
+
+def compute_mean_squared_jumping_distance(chain):
+    """
+    Compute the mean squared jumping distance (MSJD) for an MCMC chain.
+    
+    This is a summary statistic that measures the average squared distance
+    between consecutive samples.
+    
+    Parameters:
+    -----------
+    chain : array-like
+        1D or 2D array of MCMC samples.
+        
+    Returns:
+    --------
+    msjd : float or np.ndarray
+        Mean squared jumping distance. If chain is 1D, returns a float.
+        If chain is 2D, returns an array with the MSJD for each parameter
+        (computed using only that parameter's variance).
+    """
+    chain = np.asarray(chain)
+    
+    if len(chain.shape) > 1 and len(chain.shape) != 2:
+        raise ValueError("Chain must be 1D or 2D")
+    
+    # Handle multi-dimensional chains by computing MSJD for each parameter
+    if len(chain.shape) == 2:
+        return np.array([compute_mean_squared_jumping_distance(chain[:, i]) 
+                         for i in range(chain.shape[1])])
+    
+    # For 1D chains
+    sjd = compute_squared_jumping_distance(chain)
+    msjd = np.mean(sjd)
+    
+    return msjd
+
+def compute_normalized_jumping_distance(chain):
+    """
+    Compute normalized jumping distance (jumping distance divided by variance).
+    
+    This normalizes the jumping distance by the empirical variance of the chain,
+    providing a scale-invariant measure of mixing.
+    
+    Parameters:
+    -----------
+    chain : array-like
+        1D or 2D array of MCMC samples.
+        
+    Returns:
+    --------
+    njd : float or np.ndarray
+        Normalized jumping distance. If chain is 1D, returns a float.
+        If chain is 2D, returns an array with the NJD for each parameter.
+    """
+    chain = np.asarray(chain)
+    
+    if len(chain.shape) > 1 and len(chain.shape) != 2:
+        raise ValueError("Chain must be 1D or 2D")
+    
+    # Handle multi-dimensional chains
+    if len(chain.shape) == 2:
+        return np.array([compute_normalized_jumping_distance(chain[:, i]) 
+                         for i in range(chain.shape[1])])
+    
+    # For 1D chains
+    msjd = compute_mean_squared_jumping_distance(chain)
+    variance = np.var(chain)
+    
+    if variance == 0:
+        return 0.0
+    
+    njd = msjd / variance
+    
+    return njd
