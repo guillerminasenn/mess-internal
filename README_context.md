@@ -98,6 +98,53 @@ Used by GP-style priors.
 Synthetic data generation only.
 
 - Separate from inference
+
+---
+
+## Notebooks
+
+Jupyter notebooks in `notebooks/` demonstrate ESS/MESS on various problems:
+
+### GP Regression Examples
+
+- **01_gp_regression_sanity.ipynb**
+  - Basic ESS/MESS comparison on GP regression
+  - Visualizes chains and posterior distributions
+
+- **02_gp_regression_ess_vs_mess.ipynb**
+  - Detailed ESS vs MESS performance comparison
+  - Computes ESS, MSJD, and shrinking step statistics
+  - Box plots and trace plots
+
+- **03_gp_regression_distances.ipynb**
+  - Compares different distance metrics (angular, euclidean, uniform)
+  - LP-based proposal generation vs random
+
+- **04_gp_regression_diagnostics.ipynb**
+  - Convergence diagnostics and chain analysis
+  - Integrated autocorrelation time
+  - Geweke convergence test
+
+- **05_linear_programming_for_transition_matrix.ipynb**
+  - Technical deep-dive into LP-based transition matrix construction
+  - Comparison with random transition matrices
+
+- **06_mess_uniform_varying_m.ipynb**
+  - MESS performance as function of M (number of proposals)
+  - Tests on varying problem dimensions
+
+- **07_lambda_sensitivity.ipynb**
+  - Sensitivity analysis for MESS hyperparameter λ
+  - Tests on varying problem dimensions D=[1,5,10]
+
+### Logistic Regression Example
+
+- **08_logistic_regression_ess_mess.ipynb**
+  - Bayesian logistic regression (Murray et al., Example 2)
+  - ESS vs MESS comparison with Uniform, Angular, and Euclidean distance metrics
+  - Computes ESS and MSJD metrics
+  - Visualizes shrinking steps and computation time
+  - Includes trace plots for convergence assessment
 - Used to reproduce experiments and figures
 
 ---
