@@ -4,7 +4,6 @@ import numpy as np
 from scipy.linalg import toeplitz
 from .base import GaussianPriorProblem
 
-
 class SemiBlindDeconvolution(GaussianPriorProblem):
     """Semi-blind deconvolution with Gaussian prior on the image.
     
