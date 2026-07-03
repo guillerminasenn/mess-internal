@@ -8,7 +8,7 @@ Estimate ESS as N/tau (chain length divided by autocorrelation time)
 import numpy as np
 import matplotlib.pyplot as plt
 
-def estimate_effective_sample_size(chain, max_lag=None):
+def estimate_effective_sample_size(chain, max_lag=None, tol=1e-15):
     """
     Estimate the effective sample size (ESS) of an MCMC chain using ACF method.
     
@@ -46,20 +46,30 @@ def estimate_effective_sample_size(chain, max_lag=None):
     if max_lag is None:
         max_lag = min(int(N/5), 1000)
     # print(f'Chain length = {N} and max_lag = {max_lag}.')
-    
+
     # Center the chain (subtract mean)
     centered_chain = chain - np.mean(chain)
+
+    # Compute variance of centered chain
+    variance_centered = np.var(centered_chain)
+    if variance_centered == 0:
+        print('Warning: Centered chain variance is zero. Returning ESS = 0.')
+        return 0
     
     # Compute autocorrelation and integrated autocorrelation time
     acf_values = compute_autocorrelation(centered_chain, max_lag)
     tau = integrated_autocorrelation_time(acf_values)
+    # print(f'Estimated autocorrelation time (tau) = {tau:.2f}.')
+    # if np.allclose(acf_values[1:], 1.0):
+    #     print('Warning: All autocorrelation values are one. Returning ESS = 0.')
+    #     return 0
     
     # ESS = N / tau
     ess = N / tau
     
     return ess
 
-def compute_autocorrelation(x, max_lag):
+def compute_autocorrelation(x, max_lag, tol=1e-15):
     """
     Compute autocorrelation function up to max_lag.
     
@@ -79,8 +89,9 @@ def compute_autocorrelation(x, max_lag):
     variance = np.var(x)
     # print(f'Variance of the chain = {variance}')
     
-    if variance == 0:
-        return np.zeros(max_lag + 1)
+    if variance < tol:
+        # print(f"Chain has variance 0. Autocor is 1 for all lags.")
+        return np.ones(max_lag + 1)
     
     acf = np.zeros(max_lag + 1)
     
@@ -92,7 +103,7 @@ def compute_autocorrelation(x, max_lag):
     for lag in range(1, max_lag + 1):
         acf[lag] = np.sum(x[lag:] * x[:-lag]) / ((N - lag) * variance)
         # print(f'lag={lag}, acf[lag]={acf[lag]}')
-    
+    # print(f"Computed autocorrelation values up to lag {max_lag}, with results:{acf}")
     return acf
 
 def integrated_autocorrelation_time(acf):
@@ -109,26 +120,33 @@ def integrated_autocorrelation_time(acf):
     tau : float
         Integrated autocorrelation time
     """
-    # Apply Geyer's monotone sequence criterion
-    max_lag = len(acf) - 1
+    # Test if autocorrelation=1 for all lags
+    if np.sum(acf) == len(acf):
+        return np.inf
     
-    # Compute the sum of consecutive pairs for faster convergence
+    # Apply Geyer's initial monotone sequence criterion
+    max_lag = len(acf) - 1
+
+    # Compute the sum of consecutive pairs
     sums = np.zeros(max_lag // 2)
     for i in range(max_lag // 2):
-        sums[i] = acf[2*i+1] + acf[2*i+2]
-    
-    # Find where the sum becomes negative or non-monotone
-    for i in range(1, len(sums)):
-        if sums[i] < 0 or sums[i] > sums[i-1]:
-            # print(f'Sum becomes negative or non-monotone at i={i}')
-            break
-    
-    # Truncate at that point
-    M = 2 * i
-    
-    # Compute the integrated autocorrelation time
-    # 1 + 2 * sum_i=1^M (acf[i])
-    tau = 1.0 + 2.0 * np.sum(acf[1:M+1])
+        sums[i] = acf[2 * i + 1] + acf[2 * i + 2]
+
+    if len(sums) == 0:
+        return 1.0
+
+    # Keep only the initial positive sequence
+    first_nonpos = np.where(sums <= 0)[0]
+    cutoff = int(first_nonpos[0]) if first_nonpos.size > 0 else len(sums)
+    sums = sums[:cutoff]
+    if len(sums) == 0:
+        return 1.0
+
+    # # Enforce monotone non-increasing sequence
+    # sums = np.minimum.accumulate(sums)
+
+    # Integrated autocorrelation time from monotone pair sums
+    tau = 1.0 + 2.0 * np.sum(sums)
     # print(f'The integrated autocorrelation time is {tau}.')
     
     return max(1.0, tau)  # Ensure tau is at least 1

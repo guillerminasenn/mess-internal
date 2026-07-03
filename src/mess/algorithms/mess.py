@@ -4,7 +4,17 @@
 import numpy as np
 from .utils import solve_transition_lp
 
-def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam=0.1, P0=None):
+def mess_step(
+    x,
+    problem,
+    rng,
+    M=1,
+    use_lp=False,
+    distance_metric='angular',
+    lam=0.1,
+    P0=None,
+    return_diagnostics=False,
+):
     """Perform a MESS step.
     Parameters
     ----------
@@ -31,6 +41,9 @@ def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam
     P0 : np.ndarray or None
         Initial doubly stochastic matrix for the transition probabilities.
         If None, a uniform matrix with zero diagonal is used.
+    return_diagnostics : bool
+        If True, return per-iteration diagnostics including the accepted
+        proposal index and distances to all candidates.
 
     Returns
     -------
@@ -40,9 +53,12 @@ def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam
         Number of shrinking steps performed.
     P1 : np.ndarray
         Transition matrix used to sample the new state (only if lp=True).
+    diagnostics : list
+        Per-iteration diagnostic data (only if return_diagnostics=True).
     """
     # Initialize transition matrix to None
     P1 = None
+    diagnostics = [] if return_diagnostics else None
 
     # Center the current state and the auxiliary sample from the prior
     x_centered = x - problem.prior_mean()
@@ -79,6 +95,25 @@ def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam
 
         # Compute A_i, the set of indexes of the candidate proposals
         A = np.where(log_likelihoods > logy)[0]
+
+        diag_entry = None
+        if return_diagnostics:
+            abs_angular_dist = np.abs(phi_vector - alpha)
+            angular_distances = np.minimum(abs_angular_dist, 2 * np.pi - abs_angular_dist)
+            diff = x_prop_vector - x[:, np.newaxis]
+            euclidean_distances = np.linalg.norm(diff, axis=0)
+            diag_entry = {
+                'phi_min': float(phi_min),
+                'phi_max': float(phi_max),
+                'alpha': float(alpha),
+                'phi_vector': phi_vector.copy(),
+                'log_likelihoods': log_likelihoods.copy(),
+                'valid_indices': A.copy(),
+                'angular_distances': angular_distances,
+                'euclidean_distances': euclidean_distances,
+                'accepted_index': None,
+            }
+            diagnostics.append(diag_entry)
 
         # If there are valid proposals, select one and return
         if len(A) > 0:
@@ -126,7 +161,11 @@ def mess_step(x, problem, rng, M=1, use_lp=False, distance_metric='angular', lam
             # Sample uniformly among the valid proposals
             else:
                 i = rng.choice(A)
+            if return_diagnostics and diag_entry is not None:
+                diag_entry['accepted_index'] = int(i)
 
+            if return_diagnostics:
+                return x_prop_vector[:, i], nr_intervals, P1, diagnostics
             return x_prop_vector[:, i], nr_intervals, P1
 
         # Otherwise, shrink the angle interval
