@@ -22,7 +22,6 @@ kiwisolver==1.5.0
 MarkupSafe==3.0.3
 matplotlib==3.10.8
 matplotlib-inline==0.2.1
--e git+ssh://git@github.com/guillerminasenn/multiproposal-internal.git@8457b5486d82b12869de8a61e1d57f9dd789045b#egg=multiproposal
 nest-asyncio==1.6.0
 numpy==2.4.3
 osqp==1.1.1
