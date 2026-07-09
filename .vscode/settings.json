@@ -1,0 +1,4 @@
+{
+  "python.defaultInterpreterPath": "/home/senng/mess-internal/.venv-mess/bin/python",
+  "python.terminal.activateEnvironment": true
+}

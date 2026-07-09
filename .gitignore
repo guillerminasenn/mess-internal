@@ -1,2 +1,6 @@
 estimations/
 reports/*
+.venv/
+.venv-*/
+.env/
+.ipynb_checkpoints/
