@@ -7,10 +7,10 @@ from typing import Dict, Optional
 import numpy as np
 
 from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase2_helpers import (
+from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
     load_chain,
     parameter_index_for_pair,
-    phase2_dirs,
+    report_dirs,
 )
 from mess.plotting.diagnostics import make_hist_grid_comps
 
@@ -45,7 +45,7 @@ def _robust_radius(samples, comp_list):
 
 def run(config: Optional[ExperimentConfig] = None) -> Dict[str, object]:
     cfg = config or ExperimentConfig()
-    dirs = phase2_dirs(cfg)
+    dirs = report_dirs(cfg)
     out_dir = dirs["fig_root"] / "pairplots"
     out_dir.mkdir(parents=True, exist_ok=True)
 

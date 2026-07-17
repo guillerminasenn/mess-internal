@@ -8,16 +8,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase2_helpers import (
+from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
     build_visual_data,
-    phase2_dirs,
+    report_dirs,
 )
 from mess.experiments.common.plotting_utils import apply_publication_style, save_figure
 
 
 def run(config: Optional[ExperimentConfig] = None) -> Dict[str, object]:
     cfg = config or ExperimentConfig()
-    dirs = phase2_dirs(cfg)
+    dirs = report_dirs(cfg)
     out_dir = dirs["fig_root"] / "visual_checks"
     out_dir.mkdir(parents=True, exist_ok=True)
     apply_publication_style()

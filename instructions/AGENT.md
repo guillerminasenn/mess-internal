@@ -15,6 +15,7 @@ This file defines always-on behavior for agents working in this repository.
 5. Keep the `src/<repo>/problems` design: experiments must construct/import problem objects from `src/<repo>/problems`.
 6. Any instruction updates must be reflected in affected instruction files.
 7. If a user request contradicts existing instructions, ask for user confirmation before applying the contradictory change.
+8. After implementing repository changes, create a git commit and push to the remote.
 
 ## Instructions maintenance protocol
 - Treat `instructions/` as the source of operational policy.
@@ -22,6 +23,7 @@ This file defines always-on behavior for agents working in this repository.
 - Keep experiment-specific replication docs under `instructions/experiments/`.
 - Keep run/outputs/parallel/checkpoint policy under `instructions/run/`.
 - Keep diagnostics and plotting policies under `instructions/diagnostics/` and `instructions/plotting/`.
+- After applying changes, commit and push so repository history stays up to date.
 
 ## Run and diagnostics policy references
 - `instructions/run/outputs.md`

@@ -115,8 +115,12 @@ Actions:
   - chain/path naming helpers
   - task construction/missing detection
   - shared draws/problem factory helpers
+- Replace ambiguous phase orchestration naming with explicit workflow naming:
+  - run workflow
+  - compute-metrics workflow
+  - report workflow
 - Remove duplicated chain filename/path logic from multiple modules.
-- Remove phase-2 dependence on private helpers in `run_chains.py` by exposing clean helper surfaces.
+- Remove report-generation dependence on private helpers in `run_chains.py` by exposing clean helper surfaces.
 - Keep algorithm behavior and outputs functionally equivalent.
 
 Deliverables:

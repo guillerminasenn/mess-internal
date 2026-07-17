@@ -31,7 +31,7 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:
 
     rows = []
     for chain_path in sorted(outdir.glob("chain_*.npz")):
-        parsed = _parse_chain_name(chain_path)
+        parsed = parse_chain_name(chain_path)
         if parsed is None:
             continue
         alg, d, M, P = parsed

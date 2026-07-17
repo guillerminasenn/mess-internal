@@ -19,3 +19,7 @@
 - Record worker execution settings in `config.json` under an execution section.
 - Keep deterministic worker output ordering where feasible.
 - Reuse cached chains/metrics instead of rerunning existing artifacts.
+
+## Repository update rule
+- After implementing requested repository changes, create a git commit and push to remote.
+- If push is blocked by missing permissions/remote state, report the blocker immediately.

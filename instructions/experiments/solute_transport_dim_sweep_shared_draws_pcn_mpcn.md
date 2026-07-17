@@ -1,7 +1,7 @@
 # Experiment Spec: solute_transport_dim_sweep_shared_draws_pcn_mpcn
 
 ## Objective
-Compare chain behavior and diagnostics across problem dimensions using shared data-generating draws and multiple samplers (MESS, MH, pCN, mpCN), then generate phase-style figures/tables/manifests.
+Compare chain behavior and diagnostics across problem dimensions using shared data-generating draws and multiple samplers (MESS, MH, pCN, mpCN), then generate report figures/tables/manifests.
 
 ## Source package
 - `src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/`
@@ -43,37 +43,44 @@ Legacy compatibility path also exists for chain files under:
 - Each task uses per-dimension parameter/observation selection before sampling.
 
 ## Execution entrypoints
-Phase 1:
+Run workflow (chains only):
 - `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_chains`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase1_all`
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_workflow`
 
-Phase 2:
+Compute-metrics workflow (no chain generation):
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_availability`
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.benchmark_runtime`
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.compute_metrics`
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.compute_metrics_workflow`
+
+Report workflow (figures and report checklist):
 - `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.visual_checks`
 - `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.traceplots`
 - `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.panels`
 - `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots`
 - `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.pairplots`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase2_parity_checklist`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase2_all`
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist`
+- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_workflow`
 
 Job wrapper:
 - `jobs/AD_toy_dim_M_sweep_shared_draws_pcn_mpcn/run.py`
 
 ## Artifacts
-Phase 1 artifacts include:
+Run workflow artifacts include:
 - generated chains
+- data/latent snapshot artifact when applicable
+
+Compute-metrics workflow artifacts include:
 - chain availability diagnostics
 - runtime summary table
 - ESS/MSJD metrics summary table
-- artifact manifests (JSON + markdown)
 
-Phase 2 artifacts include:
-- visual checks
-- trace and panel figures
-- ESS/MSJD diagnostic figures
-- pairplots
-- parity checklist outputs
-- phase artifact manifests
+Report workflow artifacts include:
+- report figures and checklist outputs
+- report manifests (JSON + markdown)
+
+Compatibility note:
+- Legacy modules `phase1_all.py`, `phase2_all.py`, `phase2_helpers.py`, and `phase2_parity_checklist.py` are retained as deprecated wrappers and forward to explicit workflow modules.
 
 ## Caching and reuse behavior
 - Existing readable chain files are skipped.
