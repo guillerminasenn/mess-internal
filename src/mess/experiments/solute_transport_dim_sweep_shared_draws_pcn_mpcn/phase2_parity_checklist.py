@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist import (
     run as run_report_parity_checklist,
 )
 

@@ -5,11 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_chains import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.run_chains import (
     run as run_chains,
 )
 from mess.experiments.common.artifacts import ArtifactRegistry

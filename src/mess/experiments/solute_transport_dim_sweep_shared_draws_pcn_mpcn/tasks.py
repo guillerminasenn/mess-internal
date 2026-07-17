@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.naming import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.naming import (
     chain_path,
     get_mh_proposal_std,
     is_chain_readable,

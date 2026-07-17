@@ -1,4 +1,4 @@
-"""Configuration and path setup for AD dim sweep phase scripts."""
+"""Configuration and path setup for solute-transport dim sweep workflows."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from mess.experiments.common.run_layout import (
 
 @dataclass
 class ExperimentConfig:
-    """Minimal configuration for phase-1 scripts."""
+    """Minimal configuration for run/metrics/report workflows."""
 
     seed_data: int = 0
     seed_mcmc: int = 0
@@ -49,7 +49,7 @@ class ExperimentConfig:
     mh_proposal_isotropic_std: float = 0.000018
     mh_proposal_prior_std: float = 0.105
 
-    dataset: str = "advection_diffusion_dim_sweep_shared_draws_pcn_mpcn"
+    dataset: str = "solute_transport_dim_sweep_shared_draws_pcn_mpcn"
     algorithm: str = "dim_sweep_shared_draws_pcn_mpcn"
     sweep_mode: str = "sweep"
 

@@ -1,7 +1,7 @@
 # Notebook 11 AD Sweep Migration - Phase 2
 
 Date: 2026-07-16
-Notebook source: notebooks/jcgs-notebooks/11_advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.ipynb
+Notebook source: notebooks/jcgs-notebooks/11_solute_transport_dim_sweep_shared_draws_pcn_mpcn.ipynb
 
 ## Goal
 Migrate plotting and publication-figure sections from notebook to reusable script modules, with orchestration and a parity checklist.
@@ -19,23 +19,23 @@ Migrate plotting and publication-figure sections from notebook to reusable scrip
 ## Implemented Files
 - src/mess/experiments/common/plotting_utils.py
 - src/mess/experiments/common/checklist.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/phase2_helpers.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/visual_checks.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/traceplots.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/panels.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/ess_msjd_plots.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/pairplots.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/phase2_parity_checklist.py
-- src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/phase2_all.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/phase2_helpers.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/visual_checks.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/traceplots.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/panels.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/ess_msjd_plots.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/pairplots.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/phase2_parity_checklist.py
+- src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/phase2_all.py
 
 ## Entry Points
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.visual_checks
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.traceplots
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.panels
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.pairplots
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase2_parity_checklist
-- python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.phase2_all
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.visual_checks
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.traceplots
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.panels
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.pairplots
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.phase2_parity_checklist
+- python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.phase2_all
 
 ## Notes
 - Figure outputs are written to reports/advection_diffusion/<data_id>/sweep/<run_id>/figures/...

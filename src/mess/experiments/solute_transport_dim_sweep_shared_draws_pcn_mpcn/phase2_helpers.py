@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
     build_visual_data,
     load_chain,
     parameter_index_for_pair,

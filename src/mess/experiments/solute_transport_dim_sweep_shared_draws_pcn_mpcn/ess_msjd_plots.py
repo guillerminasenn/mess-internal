@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from mess.algorithms.effective_sample_size import estimate_effective_sample_size
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.compute_metrics import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.compute_metrics import (
     run as run_compute_metrics,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
     load_chain,
     parameter_index_for_pair,
     report_dirs,

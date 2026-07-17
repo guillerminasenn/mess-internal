@@ -1,4 +1,4 @@
-# Advection-diffusion toy problem
+# Solute-transport toy problem
 
 import numpy as np
 from .base import GaussianPriorProblem
@@ -86,8 +86,8 @@ def solve_theta(dim, params, g, kappa):
     return np.linalg.solve(A_plus, g)
 
 
-class AdvectionDiffusionToy(GaussianPriorProblem):
-    """Toy advection-diffusion inverse problem with Gaussian prior on A params."""
+class SoluteTransportToy(GaussianPriorProblem):
+    """Toy solute-transport inverse problem with Gaussian prior on A params."""
 
     def __init__(
         self,

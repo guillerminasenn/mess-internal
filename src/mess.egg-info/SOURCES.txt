@@ -13,7 +13,7 @@ src/mess/algorithms/mess.py
 src/mess/algorithms/mh.py
 src/mess/algorithms/utils.py
 src/mess/data/__init__.py
-src/mess/data/advection_diffusion.py
+src/mess/data/solute_transport.py
 src/mess/data/gp_regression.py
 src/mess/data/logistic_regression.py
 src/mess/data/sbd.py
@@ -22,7 +22,7 @@ src/mess/kernels/stationary.py
 src/mess/plotting/__init__.py
 src/mess/plotting/diagnostics.py
 src/mess/problems/__init__.py
-src/mess/problems/advection_diffusion.py
+src/mess/problems/solute_transport.py
 src/mess/problems/base.py
 src/mess/problems/gp_regression.py
 src/mess/problems/logistic_regression.py

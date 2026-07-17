@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_helpers import report_dirs
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_helpers import report_dirs
 from mess.experiments.common.checklist import write_checklist
 
 

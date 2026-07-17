@@ -11,19 +11,19 @@ import numpy as np
 
 from mess.algorithms.mess import mess_step
 from mess.algorithms.mh import mh_chain
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.naming import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.naming import (
     get_mh_proposal_std,
     is_chain_readable,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.problem_factory import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.problem_factory import (
     build_problem_for_dim,
     build_shared_draws,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.tasks import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.tasks import (
     build_missing_task_list,
 )
 

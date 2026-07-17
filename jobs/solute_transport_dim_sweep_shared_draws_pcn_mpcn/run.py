@@ -22,7 +22,7 @@ def _ensure_import_paths(repo_root: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run missing AD toy chains for notebook 11 via sharded workers.")
+    parser = argparse.ArgumentParser(description="Run missing solute-transport dim-sweep chains via sharded workers.")
     parser.add_argument("--grid-count", type=int, default=1, help="Total number of workers.")
     parser.add_argument("--grid-index", type=int, default=0, help="This worker index in [0, grid-count).")
     parser.add_argument("--dry-run", action="store_true", help="Print tasks only, do not run.")
@@ -41,8 +41,8 @@ def main() -> None:
     repo_root = _resolve_repo_root()
     _ensure_import_paths(repo_root)
 
-    from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-    from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_chains import run
+    from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
+    from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.run_chains import run
 
     cfg = ExperimentConfig()
     if args.recompute_external:

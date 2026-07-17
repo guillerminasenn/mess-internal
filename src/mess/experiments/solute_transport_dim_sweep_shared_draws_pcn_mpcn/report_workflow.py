@@ -5,26 +5,26 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots import (
     run as run_ess_msjd_plots,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.pairplots import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.pairplots import (
     run as run_pairplots,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.panels import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.panels import (
     run as run_panels,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist import (
     run as run_report_checklist,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.traceplots import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.traceplots import (
     run as run_traceplots,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.visual_checks import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.visual_checks import (
     run as run_visual_checks,
 )
 from mess.experiments.common.artifacts import ArtifactRegistry

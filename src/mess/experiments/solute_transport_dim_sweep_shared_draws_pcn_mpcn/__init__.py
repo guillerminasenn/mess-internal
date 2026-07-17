@@ -1,4 +1,4 @@
-"""Experiment workflows for AD dimension sweep with MESS/MH/pCN/mpCN."""
+"""Experiment workflows for solute-transport dimension sweep with MESS/MH/pCN/mpCN."""
 
 
 def run_workflow(*args, **kwargs):

@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from typing import Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_workflow import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.run_workflow import (
     run as run_workflow,
 )
 

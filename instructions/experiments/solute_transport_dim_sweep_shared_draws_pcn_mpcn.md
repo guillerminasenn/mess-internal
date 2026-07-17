@@ -4,11 +4,10 @@
 Compare chain behavior and diagnostics across problem dimensions using shared data-generating draws and multiple samplers (MESS, MH, pCN, mpCN), then generate report figures/tables/manifests.
 
 ## Source package
-- `src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn/`
+- `src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn/`
 
 Note:
-- The current source package still uses legacy advection-diffusion naming.
-- Planned migration renames it to a solute-transport package while preserving behavior.
+- Source package naming is now migrated to solute-transport while preserving behavior.
 
 ## Configuration model
 Main config object: `ExperimentConfig` in `config.py`.
@@ -44,26 +43,26 @@ Legacy compatibility path also exists for chain files under:
 
 ## Execution entrypoints
 Run workflow (chains only):
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_chains`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.run_workflow`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.run_chains`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.run_workflow`
 
 Compute-metrics workflow (no chain generation):
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_availability`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.benchmark_runtime`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.compute_metrics`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.compute_metrics_workflow`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_availability`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.benchmark_runtime`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.compute_metrics`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.compute_metrics_workflow`
 
 Report workflow (figures and report checklist):
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.visual_checks`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.traceplots`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.panels`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.pairplots`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist`
-- `python -m mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_workflow`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.visual_checks`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.traceplots`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.panels`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.pairplots`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist`
+- `python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_workflow`
 
 Job wrapper:
-- `jobs/AD_toy_dim_M_sweep_shared_draws_pcn_mpcn/run.py`
+- `jobs/solute_transport_dim_sweep_shared_draws_pcn_mpcn/run.py`
 
 ## Artifacts
 Run workflow artifacts include:

@@ -5,17 +5,17 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.benchmark_runtime import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.benchmark_runtime import (
     run as run_benchmark,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.compute_metrics import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.compute_metrics import (
     run as run_metrics,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_availability import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_availability import (
     run as run_availability,
 )
 from mess.experiments.common.artifacts import ArtifactRegistry

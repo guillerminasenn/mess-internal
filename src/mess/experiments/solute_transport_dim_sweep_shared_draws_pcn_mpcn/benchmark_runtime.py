@@ -8,11 +8,11 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.naming import parse_chain_name
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.naming import parse_chain_name
 
 
 def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:

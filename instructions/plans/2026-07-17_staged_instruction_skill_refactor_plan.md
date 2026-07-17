@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 Scope: instruction reorganization, skill implementation, experiment refactor, naming migration
-Status: stages 0, 1, 2, 3, and 4 implemented
+Status: stages 0, 1, 2, 3, 4, and 5 implemented
 
 ## Hard Constraints (must hold in all stages)
 
@@ -227,13 +227,13 @@ This plan will enforce the following in AGENT/instructions text:
 
 ### Candidate rename map (code/docs/jobs surfaces)
 
-- `src/mess/experiments/advection_diffusion_dim_sweep_shared_draws_pcn_mpcn`
+- `src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn`
   -> `src/mess/experiments/solute_transport_dim_sweep_shared_draws_pcn_mpcn`
 - `src/mess/problems/advection_diffusion.py`
   -> `src/mess/problems/solute_transport.py`
 - `src/mess/data/advection_diffusion.py`
   -> `src/mess/data/solute_transport.py`
-- `jobs/AD_toy_dim_M_sweep_shared_draws_pcn_mpcn`
+- `jobs/solute_transport_dim_sweep_shared_draws_pcn_mpcn`
   -> `jobs/solute_transport_dim_sweep_shared_draws_pcn_mpcn`
 
 ### `.npz` safety boundaries

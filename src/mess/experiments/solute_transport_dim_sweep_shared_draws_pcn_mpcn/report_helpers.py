@@ -7,20 +7,20 @@ from typing import Dict, Optional
 
 import numpy as np
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.naming import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.naming import (
     chain_path,
     get_mh_proposal_std,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.problem_factory import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.problem_factory import (
     build_problem_for_dim,
     build_shared_draws,
     get_param_indices_for_dim,
 )
-from mess.problems.advection_diffusion import make_Astar_from_atrue, make_Astar_nn, make_omegas_power
+from mess.problems.solute_transport import make_Astar_from_atrue, make_Astar_nn, make_omegas_power
 
 
 def report_dirs(cfg: ExperimentConfig) -> Dict[str, Path]:

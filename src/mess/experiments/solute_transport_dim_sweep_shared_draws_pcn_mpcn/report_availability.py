@@ -6,14 +6,14 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import (
     ExperimentConfig,
     build_context,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.naming import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.naming import (
     chain_path,
 )
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.tasks import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.tasks import (
     build_expected_tasks,
     should_skip_external,
 )

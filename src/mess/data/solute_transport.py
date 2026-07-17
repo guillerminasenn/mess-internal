@@ -1,7 +1,7 @@
-# Data simulation for the advection-diffusion toy model
+# Data simulation for the solute-transport toy model
 
 import numpy as np
-from mess.problems.advection_diffusion import (
+from mess.problems.solute_transport import (
     make_omegas_power,
     make_Astar_nn,
     make_Astar_from_atrue,
@@ -11,7 +11,7 @@ from mess.problems.advection_diffusion import (
 )
 
 
-def generate_advection_diffusion_data(
+def generate_solute_transport_data(
     dim=11,
     kappa=0.1,
     sigma=0.1,
@@ -23,7 +23,7 @@ def generate_advection_diffusion_data(
     a_mode="nearest_neighbor",
     seed=0,
 ):
-    """Generate synthetic data for the AD toy problem.
+    """Generate synthetic data for the solute-transport toy problem.
 
     Returns a dict with prior pieces, true parameters, and observations.
     """

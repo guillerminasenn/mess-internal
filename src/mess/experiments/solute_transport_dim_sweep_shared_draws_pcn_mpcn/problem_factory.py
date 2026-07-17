@@ -1,11 +1,11 @@
-"""Shared data draws and per-dimension problem construction for AD dim sweep."""
+"""Shared data draws and per-dimension problem construction for solute-transport dim sweep."""
 
 from __future__ import annotations
 
 import numpy as np
 
-from mess.problems.advection_diffusion import (
-    AdvectionDiffusionToy,
+from mess.problems.solute_transport import (
+    SoluteTransportToy,
     make_Astar_from_atrue,
     make_Astar_nn,
     make_omegas_power,
@@ -80,7 +80,7 @@ def build_problem_for_dim(cfg, dim: int, shared_draws: dict):
     noise = shared_draws["noise"][:dim]
     y = theta_true[obs_indices] + cfg.sigma * noise[obs_indices]
     a_init = shared_draws["a_init"][param_idx]
-    problem = AdvectionDiffusionToy(
+    problem = SoluteTransportToy(
         dim=dim,
         kappa=cfg.kappa,
         sigma=cfg.sigma,

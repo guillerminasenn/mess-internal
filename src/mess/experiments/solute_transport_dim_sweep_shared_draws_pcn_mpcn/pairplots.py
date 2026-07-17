@@ -6,8 +6,8 @@ from typing import Dict, Optional
 
 import numpy as np
 
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
-from mess.experiments.advection_diffusion_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.config import ExperimentConfig
+from mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_helpers import (
     load_chain,
     parameter_index_for_pair,
     report_dirs,
