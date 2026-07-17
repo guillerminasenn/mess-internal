@@ -1,31 +1,46 @@
 ---
 name: execute-experiment-compute-metrics
-description: Run the metrics phase for solute_transport_dim_sweep_shared_draws_pcn_mpcn to compute availability, runtime, ESS, and MSJD artifacts.
+description: Run the metrics phase for an experiment by resolving metrics entrypoints and expected outputs from instructions/experiments.
 ---
 
 # Execute Experiment: Compute Metrics
 
 Use this skill when the user asks to compute metrics after chains are available.
 
-## Experiment target
-- Package: `<repo>.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn`
-- Primary entrypoint: `compute_metrics_workflow`
+## Resolve target experiment
+1. Determine `<experiment>` from the user request.
+2. Read `instructions/experiments/<experiment>.md`.
+3. Resolve package path as `<repo>.experiments.<experiment>`.
+4. Resolve metrics entrypoint(s) from the experiment spec.
 
-## Default command
-- `source .venv-mess/bin/activate && python -m mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.compute_metrics_workflow`
+## Generic default command
+- `<activate_env_command> && python -m <repo>.experiments.<experiment>.compute_metrics_workflow`
 
-## Workflow outputs to verify
-- Diagnostics:
-  - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../diagnostics/chain_availability.json`
-- Tables:
-  - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../tables/runtime_summary.json`
-  - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../tables/metrics_summary.json`
-- Manifests:
-  - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../manifests/metrics_workflow_artifacts.json`
-  - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../manifests/metrics_workflow_artifacts.md`
+## Environment placeholder
+- `<activate_env_command>` means the repository-specific environment activation command
+  (for example `source .venv/bin/activate` or equivalent for the active workspace).
 
-## Fallback behavior
-- If metrics summary is missing in solute report root but exists in advection report root for same run, copy the table into solute root before report plotting, then rerun metrics/report phase.
+## Conditional execution (if/else)
+- If `instructions/experiments/<experiment>.md` includes `compute_metrics_workflow`:
+  - Run `python -m <repo>.experiments.<experiment>.compute_metrics_workflow`.
+- Else if the spec lists module-level metric steps (for example availability/runtime/metrics modules):
+  - Run those listed modules in documented order.
+- Else:
+  - Attempt `python -m <repo>.experiments.<experiment>.compute_metrics` and verify outputs.
+
+## Outputs to verify (from spec)
+- Read expected metric artifacts from `instructions/experiments/<experiment>.md`.
+- Validate presence of diagnostics/tables/manifests declared there.
+
+## Solute transport branch
+- If `<experiment>` is `solute_transport_dim_sweep_shared_draws_pcn_mpcn`:
+  - Run `python -m <repo>.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.compute_metrics_workflow`.
+  - Verify:
+    - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../diagnostics/chain_availability.json`
+    - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../tables/runtime_summary.json`
+    - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../tables/metrics_summary.json`
+    - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../manifests/metrics_workflow_artifacts.json`
+    - `reports/solute_transport_dim_sweep_shared_draws_pcn_mpcn/.../manifests/metrics_workflow_artifacts.md`
 
 ## Safety
 - Do not alter chain `.npz` contents.
@@ -33,6 +48,7 @@ Use this skill when the user asks to compute metrics after chains are available.
 
 ## Example invocation
 ```text
-Use execute-experiment-compute-metrics to run the metrics workflow for
-solute transport dim sweep and report the generated diagnostics/tables/manifests.
+Use execute-experiment-compute-metrics for <experiment>; resolve the metrics
+workflow from instructions/experiments/<experiment>.md, run it, and report
+the generated diagnostics/tables/manifests.
 ```

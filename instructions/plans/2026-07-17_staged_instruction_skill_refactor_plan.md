@@ -148,7 +148,7 @@ Deliverables:
 Approval gate:
 - Approve rename impact summary and compatibility notes.
 
-## Stage 6: Skills Implementation Under `.skills/` (in progress)
+## Stage 6: Skills Implementation Under `.skills/` (completed)
 
 Goal: implement requested workflow skills in repo-root `.skills`.
 
@@ -158,6 +158,12 @@ Actions:
   - `.skills/execute-experiment-run-chains/SKILL.md`
   - `.skills/execute-experiment-compute-metrics/SKILL.md`
   - `.skills/execute-experiment-produce-reports/SKILL.md`
+- Generalize all four skills to use `<repo>` and `<experiment>` placeholders.
+- Make execution skills instruction-driven by resolving behavior from
+  `instructions/experiments/<experiment>.md`.
+- Add explicit conditional routing (`if/else`) within each skill:
+  - generic branch for any experiment
+  - explicit branch for `solute_transport_dim_sweep_shared_draws_pcn_mpcn`
 - Defer by user request:
   - `.skills/plot-slices/SKILL.md`
 - Ensure each skill reflects current instructions and policy split.
