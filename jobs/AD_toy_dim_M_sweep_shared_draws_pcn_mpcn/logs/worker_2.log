@@ -1,0 +1,15 @@
+repo_root=/home/senng/mess-internal
+output_dir=/home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000
+total_missing_tasks=36
+worker=2/12
+worker_tasks=3
+[1/3] running mh d=10 path=/home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000/chain_d10_mh_sigma20.105_covprior.npz
+Start MH chain: d=10, n_iters=300000, proposal_std=0.105, proposal_cov=prior
+Saved /home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000/chain_d10_mh_sigma20.105_covprior.npz
+[2/3] running mess d=30 path=/home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000/chain_d30_mess_M50.npz
+Start MESS chain: d=30, M=50, n_iters=300000
+Saved /home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000/chain_d30_mess_M50.npz
+[3/3] running mpcn d=40 path=/home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000/chain_d40_mpcn_P50_rho0p50000.npz
+Start mPCN chain: d=40, n_iters=300000, P=50, rho=0.5
+Saved /home/senng/mess-internal/estimations/AD_toy_dim_M_sweep_shared_draws/priorATrue_obs_central_modes_tau22.0_sigma0.5_seed0_dmax100_Niters300000/chain_d40_mpcn_P50_rho0p50000.npz
+Worker finished.
