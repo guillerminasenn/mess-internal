@@ -1,6 +1,6 @@
 ---
 name: create-experiment
-description: Create a new experiment package under src/mess/experiments with matching instructions and job wrapper, following repo run/output/diagnostics policy and src/mess/problems separation.
+description: Create a new experiment package under src/<repo>/experiments with matching instructions and job wrapper, following repo run/output/diagnostics policy and src/<repo>/problems separation.
 ---
 
 # Create Experiment
@@ -8,8 +8,8 @@ description: Create a new experiment package under src/mess/experiments with mat
 Use this skill when the user asks to create a new experiment workflow in this repository.
 
 ## Scope
-- Create experiment package structure under `src/mess/experiments/<experiment_name>/`.
-- Keep problem definitions in `src/mess/problems/`; do not put problem classes in experiment modules.
+- Create experiment package structure under `src/<repo>/experiments/<experiment_name>/`.
+- Keep problem definitions in `src/<repo>/problems/`; do not put problem classes in experiment modules.
 - Create or update matching docs under `instructions/experiments/`.
 - Create or update matching job wrapper under `jobs/<experiment_name>/`.
 - Ensure run layout uses deterministic `data_id` and `run_id` hashing conventions.
@@ -21,17 +21,17 @@ Use this skill when the user asks to create a new experiment workflow in this re
 - If request contradicts existing instructions, ask for confirmation before applying.
 
 ## Standard structure to create
-- `src/mess/experiments/<experiment_name>/config.py`
-- `src/mess/experiments/<experiment_name>/run_chains.py`
-- `src/mess/experiments/<experiment_name>/compute_metrics.py`
-- `src/mess/experiments/<experiment_name>/report_workflow.py`
-- `src/mess/experiments/<experiment_name>/__init__.py`
+- `src/<repo>/experiments/<experiment_name>/config.py`
+- `src/<repo>/experiments/<experiment_name>/run_chains.py`
+- `src/<repo>/experiments/<experiment_name>/compute_metrics.py`
+- `src/<repo>/experiments/<experiment_name>/report_workflow.py`
+- `src/<repo>/experiments/<experiment_name>/__init__.py`
 - `jobs/<experiment_name>/run.py`
 - `instructions/experiments/<experiment_name>.md`
 
 ## Implementation guidance
 1. Start from `ExperimentConfig` + `build_context` patterns used in existing experiments.
-2. Use `mess.experiments.common` helpers (`run_layout`, artifacts/checklists, plotting utilities) where possible.
+2. Use `<repo>.experiments.common` helpers (`run_layout`, artifacts/checklists, plotting utilities) where possible.
 3. Provide explicit workflow entrypoints for:
    - running chains
    - computing metrics

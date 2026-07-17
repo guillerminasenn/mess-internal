@@ -8,7 +8,7 @@ description: Run the metrics phase for solute_transport_dim_sweep_shared_draws_p
 Use this skill when the user asks to compute metrics after chains are available.
 
 ## Experiment target
-- Package: `mess.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn`
+- Package: `<repo>.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn`
 - Primary entrypoint: `compute_metrics_workflow`
 
 ## Default command
