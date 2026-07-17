@@ -148,20 +148,24 @@ Deliverables:
 Approval gate:
 - Approve rename impact summary and compatibility notes.
 
-## Stage 6: Skills Implementation Under `.skills/`
+## Stage 6: Skills Implementation Under `.skills/` (in progress)
 
 Goal: implement requested workflow skills in repo-root `.skills`.
 
 Actions:
 - Create:
   - `.skills/create-experiment/SKILL.md`
-  - `.skills/execute-experiment/SKILL.md`
+  - `.skills/execute-experiment-run-chains/SKILL.md`
+  - `.skills/execute-experiment-compute-metrics/SKILL.md`
+  - `.skills/execute-experiment-produce-reports/SKILL.md`
+- Defer by user request:
   - `.skills/plot-slices/SKILL.md`
 - Ensure each skill reflects current instructions and policy split.
 - Ensure plot-slices explicitly follows plotting policy and ESS/MESS ellipse/slice rendering intent.
 
 Deliverables:
-- Three callable skill definitions in `.skills/`.
+- Four callable skill definitions in `.skills/` for create/run/metrics/reports.
+- `plot-slices` skill intentionally deferred until requested.
 
 Approval gate:
 - Approve skill wording and trigger descriptions.
