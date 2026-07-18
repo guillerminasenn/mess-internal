@@ -7,6 +7,11 @@ description: Run the chain-generation phase for an experiment in src/<repo>/expe
 
 Use this skill when the user asks to run (or dry-run) chain generation for any experiment.
 
+## Stage-separation rule
+- This skill is execution-only.
+- Do not create or refactor experiment modules here; use `create-experiment` for implementation changes.
+- If required run entrypoints are missing, stop and request implementation via `create-experiment` first.
+
 ## Resolve target experiment
 1. Determine `<experiment>` from the user request.
 2. Read `instructions/experiments/<experiment>.md`.

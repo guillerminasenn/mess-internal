@@ -17,9 +17,16 @@ Recommended files under `src/<repo>/experiments/<experiment_name>/`:
 - `config.py`: dataclass + payload builders for data config, algorithm config, execution config.
 - `run_chains.py`: chain generation/orchestration entrypoint.
 - `compute_metrics.py`: post-chain metric computation.
+- `run_workflow.py`: run-phase orchestrator that writes run manifests and artifact summaries.
+- `compute_metrics_workflow.py`: metrics-phase orchestrator that writes diagnostics/tables/manifests.
+- `report_workflow.py`: report-phase orchestrator for figures/tables/checklists.
 - `report_availability.py`: checks expected vs available chain artifacts.
-- `phase*_all.py`: optional phase orchestrators for grouped workflows.
 - `*_plots.py` / `visual_checks.py`: report figure generation modules.
+
+## Script-first execution model
+- Experiment runs should be launched from job wrappers under `jobs/<experiment>/`.
+- Notebook-driven experiment execution is not the default path; notebooks may be used only for reference or explicit user-requested checks.
+- Job wrappers should remain thin: parse CLI flags, build/override config, and call experiment workflow entrypoints.
 
 ## Interaction with `problems/`
 Typical pattern:
@@ -33,6 +40,10 @@ Use deterministic run layout:
 - `estimations/<dataset>/<data_id>/<sweep|fixed>/<run_id>/...`
 - `reports/<dataset>/<data_id>/<sweep|fixed>/<run_id>/...`
 
+Path symmetry requirement:
+- For a given `dataset`, `data_id`, `sweep|fixed`, and `run_id`, write computational artifacts under the matching `estimations/` subtree and reporting artifacts under the matching `reports/` subtree.
+- Keep config snapshots and manifests in both phases as needed so runs can be reproduced and audited from either root.
+
 `data_id` should encode only stable data-generation settings.
 `run_id` should encode algorithm/statistical settings.
 
@@ -42,12 +53,12 @@ Within each run:
 
 ## Interaction with `jobs/`
 Job wrappers should live under:
-- `jobs/<dataset>/<run_id>_data_<data_id>/run.py`
+- `jobs/<experiment>/run.py`
 
 Wrapper responsibilities:
 - parse CLI args (grid sharding, dry-run flags)
 - build/override experiment config
-- call `src/<repo>/experiments/<experiment_name>/run_chains.py` (or orchestrator)
+- call `src/<repo>/experiments/<experiment_name>/run_chains.py` and/or workflow orchestrators
 
 ## Portability rules for template reuse
 - Resolve repository root from environment override or `pyproject.toml` walk-up.

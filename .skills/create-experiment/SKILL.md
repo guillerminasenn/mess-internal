@@ -13,12 +13,14 @@ Use this skill when the user asks to create a new experiment workflow in this re
 - Create or update matching docs under `instructions/experiments/`.
 - Create or update matching job wrapper under `jobs/<experiment>/`.
 - Ensure run layout uses deterministic `data_id` and `run_id` hashing conventions.
+- Implement code and entrypoints only; do not execute chain generation as part of this skill.
 
 ## Required policy checks
 - Do not read from `notebooks/` unless explicitly requested.
 - Do not edit, delete, or rewrite `.npz` contents.
 - If policy/docs are changed, update affected files in `instructions/` in the same workstream.
 - If request contradicts existing instructions, ask for confirmation before applying.
+- For staged experiment plans, stop after implementation and hand off execution to `execute-experiment-run-chains`.
 
 ## Standard structure to create
 - `src/<repo>/experiments/<experiment>/config.py`
@@ -58,8 +60,16 @@ Use this skill when the user asks to create a new experiment workflow in this re
 
 ## Done criteria
 - Experiment package imports compile.
-- Job wrapper resolves and runs in dry-run mode.
+- Job wrapper resolves (syntax/import checks only unless user explicitly requests execution).
 - Experiment instruction file documents run, metrics, and report entrypoints.
+
+## Stage-separation rule
+- This skill is for create/implement phases.
+- Do not run chains, metrics, or plotting commands unless the user explicitly asks for combined execution.
+- Recommend next-step skill invocations in order:
+   1) `execute-experiment-run-chains`
+   2) `execute-experiment-compute-metrics`
+   3) `execute-experiment-produce-reports`
 
 ## Example invocation
 ```text
