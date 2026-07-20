@@ -38,6 +38,15 @@ def load_mess_ellipse_traces(cfg: ExperimentConfig, estimations_dir: Path, M: in
     chain_file = chain_path(estimations_dir, alg="mess", M=M)
     trace_file = chain_file.with_name(chain_file.stem + "_ellipse_traces.json")
     if not trace_file.exists():
+        sweep_root = estimations_dir.parent
+        candidates = sorted(
+            sweep_root.glob(f"run_h*/{chain_file.stem}_ellipse_traces.json"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        if candidates:
+            trace_file = candidates[0]
+    if not trace_file.exists():
         return [], trace_file
     with open(trace_file, "r", encoding="utf-8") as handle:
         payload = json.load(handle)

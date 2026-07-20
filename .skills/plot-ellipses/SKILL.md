@@ -19,6 +19,10 @@ Use this skill when the user asks for MESS ellipse diagnostics (contiguous overl
 ## Commands
 - Polar twist default module:
   - `<activate_env_command> && python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics`
+- Polar twist with contiguous window filter:
+  - `<activate_env_command> && python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics --start-iter <START> --n-iters <COUNT>`
+- Polar twist with explicit iteration list:
+  - `<activate_env_command> && python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics --iters <I1,I2,...>`
 
 ## Conditional logic
 - If `<experiment>` is `polar_twist_mcmc_comparison`:
@@ -27,8 +31,11 @@ Use this skill when the user asks for MESS ellipse diagnostics (contiguous overl
   - Use the experiment-specific ellipse diagnostics module defined in `instructions/experiments/<experiment>.md`.
 
 - If required trace sidecars are missing:
-  - Stop plotting request.
-  - Ask to run chains with trace capture enabled and explicit iteration targets.
+  - Backfill exact traces using run wrapper overrides, then re-run plotting.
+  - Backfill command (contiguous window):
+    - `<activate_env_command> && python jobs/<experiment>/run.py --capture-ellipse-traces --ellipse-start-iter <START> --ellipse-count <COUNT> --grid-count <N> --grid-index <I>`
+  - Backfill command (explicit list):
+    - `<activate_env_command> && python jobs/<experiment>/run.py --capture-ellipse-traces --ellipse-iters <I1,I2,...> --grid-count <N> --grid-index <I>`
 
 ## Validation
 - Confirm generated overlay figure(s) and interval-panel figure(s) are present.
@@ -36,5 +43,6 @@ Use this skill when the user asks for MESS ellipse diagnostics (contiguous overl
 
 ## Example invocation
 ```text
-Use plot-ellipses for polar_twist_mcmc_comparison to generate MESS ellipse diagnostics for captured iterations.
+Use plot-ellipses for polar_twist_mcmc_comparison to generate MESS ellipse diagnostics
+for iterations 10000 to 10010.
 ```

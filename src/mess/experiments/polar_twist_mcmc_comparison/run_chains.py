@@ -36,6 +36,73 @@ def _selected_trace_iters(cfg: ExperimentConfig) -> list[int]:
     return selected
 
 
+def _load_existing_trace_doc(trace_path: Path) -> dict:
+    if not trace_path.exists():
+        return {}
+    try:
+        with open(trace_path, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _capture_trace_payload(
+    problem,
+    x0: np.ndarray,
+    cfg: ExperimentConfig,
+    m: int,
+    trace_iters: list[int],
+) -> list[dict]:
+    if not trace_iters:
+        return []
+    target_set = set(int(v) for v in trace_iters)
+    max_iter = max(target_set)
+    rng = np.random.default_rng(cfg.seed_mcmc)
+    x = x0.copy()
+    payload: list[dict] = []
+    for t in range(max_iter):
+        iter_no = t + 1
+        if iter_no in target_set:
+            x, _, _, trace = mess_step(
+                x,
+                problem,
+                rng,
+                M=m,
+                use_lp=False,
+                return_trace=True,
+            )
+            payload.append({"iteration": iter_no, "trace": trace_to_jsonable(trace)})
+        else:
+            x, _, _ = mess_step(x, problem, rng, M=m, use_lp=False)
+    return payload
+
+
+def _merge_trace_payload(existing_doc: dict, new_payload: list[dict], cfg: ExperimentConfig, m: int) -> dict:
+    merged_by_iter: dict[int, dict] = {}
+    for item in existing_doc.get("traces", []):
+        try:
+            merged_by_iter[int(item["iteration"])] = item
+        except (KeyError, TypeError, ValueError):
+            continue
+    for item in new_payload:
+        merged_by_iter[int(item["iteration"])] = item
+
+    merged_traces = [merged_by_iter[k] for k in sorted(merged_by_iter.keys())]
+    return {
+        "alg": "mess",
+        "M": int(m),
+        "seed_mcmc": int(cfg.seed_mcmc),
+        "n_iters": int(cfg.n_iters),
+        "capture_mode": {
+            "iters": [int(v) for v in cfg.ellipse_trace_iters],
+            "window_start": int(cfg.ellipse_trace_window_start),
+            "window_length": int(cfg.ellipse_trace_window_length),
+        },
+        "trace_count": len(merged_traces),
+        "traces": merged_traces,
+    }
+
+
 def run(
     grid_count: int = 1,
     grid_index: int = 0,
@@ -102,68 +169,47 @@ def run(
     for task in my_tasks:
         out_path = Path(str(task["path"]))
         alg = str(task["alg"]) 
-        if out_path.exists():
+        if out_path.exists() and not (
+            alg == "mess" and cfg.capture_mess_ellipse_traces and _selected_trace_iters(cfg)
+        ):
             continue
 
         if alg == "mess":
             m = int(task["M"])
-            rng = np.random.default_rng(cfg.seed_mcmc)
-            chain = np.zeros((cfg.n_iters + 1, x0.shape[0]), dtype=float)
-            chain[0] = x0.copy()
-            x = x0.copy()
             trace_iters = _selected_trace_iters(cfg) if cfg.capture_mess_ellipse_traces else []
-            trace_iter_set = set(trace_iters)
-            traces_payload = []
-            t0 = time.perf_counter()
-            for t in range(cfg.n_iters):
-                iter_no = t + 1
-                if iter_no in trace_iter_set:
-                    x, _, _, trace = mess_step(
-                        x,
-                        problem,
-                        rng,
-                        M=m,
-                        use_lp=False,
-                        return_trace=True,
-                    )
-                    traces_payload.append(
-                        {
-                            "iteration": iter_no,
-                            "trace": trace_to_jsonable(trace),
-                        }
-                    )
-                else:
+            runtime = float("nan")
+            if not out_path.exists():
+                rng = np.random.default_rng(cfg.seed_mcmc)
+                chain = np.zeros((cfg.n_iters + 1, x0.shape[0]), dtype=float)
+                chain[0] = x0.copy()
+                x = x0.copy()
+                t0 = time.perf_counter()
+                for t in range(cfg.n_iters):
                     x, _, _ = mess_step(x, problem, rng, M=m, use_lp=False)
-                chain[t + 1] = x
-            runtime = time.perf_counter() - t0
-            post = chain[:: cfg.thin]
-            metadata = {
-                "alg": "mess",
-                "M": m,
-                "n_iters": cfg.n_iters,
-                "burn_in": cfg.burn_in,
-                "thin": cfg.thin,
-                "seed_mcmc": cfg.seed_mcmc,
-                "seed_data": cfg.data_seed,
-                "runtime_sec": runtime,
-            }
-            _save_chain(out_path, post, metadata)
+                    chain[t + 1] = x
+                runtime = time.perf_counter() - t0
+                post = chain[:: cfg.thin]
+                metadata = {
+                    "alg": "mess",
+                    "M": m,
+                    "n_iters": cfg.n_iters,
+                    "burn_in": cfg.burn_in,
+                    "thin": cfg.thin,
+                    "seed_mcmc": cfg.seed_mcmc,
+                    "seed_data": cfg.data_seed,
+                    "runtime_sec": runtime,
+                }
+                _save_chain(out_path, post, metadata)
+            else:
+                with np.load(out_path) as payload:
+                    post = np.asarray(payload["chain"])
+
+            traces_payload = _capture_trace_payload(problem, x0, cfg, m, trace_iters)
 
             if traces_payload:
                 trace_path = out_path.with_name(out_path.stem + "_ellipse_traces.json")
-                trace_doc = {
-                    "alg": "mess",
-                    "M": m,
-                    "seed_mcmc": int(cfg.seed_mcmc),
-                    "n_iters": int(cfg.n_iters),
-                    "capture_mode": {
-                        "iters": [int(v) for v in cfg.ellipse_trace_iters],
-                        "window_start": int(cfg.ellipse_trace_window_start),
-                        "window_length": int(cfg.ellipse_trace_window_length),
-                    },
-                    "trace_count": len(traces_payload),
-                    "traces": traces_payload,
-                }
+                existing_doc = _load_existing_trace_doc(trace_path)
+                trace_doc = _merge_trace_payload(existing_doc, traces_payload, cfg=cfg, m=m)
                 with open(trace_path, "w", encoding="utf-8") as handle:
                     json.dump(trace_doc, handle, indent=2)
                 logs.append(
@@ -180,7 +226,7 @@ def run(
                 )
 
                 if cfg.ellipse_plot_enable_in_run:
-                    trace_sorted = sorted(traces_payload, key=lambda item: int(item["iteration"]))
+                    trace_sorted = sorted(trace_doc["traces"], key=lambda item: int(item["iteration"]))
                     fig_dir = outdir / "mess_ellipse_figures"
                     fig_dir.mkdir(parents=True, exist_ok=True)
                     overlay_path = fig_dir / f"mess_M{m}_overlay_n{len(trace_sorted)}.png"
