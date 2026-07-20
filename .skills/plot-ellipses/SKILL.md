@@ -40,6 +40,9 @@ Use this skill when the user asks for MESS ellipse diagnostics (contiguous overl
 ## Validation
 - Confirm generated overlay figure(s) and interval-panel figure(s) are present.
 - Confirm output names include method settings and iteration anchors.
+- Confirm interval panels start at interval 1 (no full-bracket panel).
+- Confirm current state is marked with a blue triangle and accepted state with a hollow square.
+- Confirm legend is visible and interval titles report `valid/M` proposal counts.
 
 ## Example invocation
 ```text

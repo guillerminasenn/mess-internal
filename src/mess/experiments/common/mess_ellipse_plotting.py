@@ -7,6 +7,7 @@ from typing import Dict, Iterable, List
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 
 from mess.experiments.common.plotting_utils import save_figure
 
@@ -164,21 +165,19 @@ def plot_iteration_panels(trace_item: dict, problem, out_path: Path, title_prefi
     slice_mask = _slice_mask(trace_item, problem, phi_grid)
     xlim, ylim, bracket_len = _base_limits(phi_grid, alpha_val, x_norm, nu_parallel, nu_perp_norm)
 
-    n_panels = 1 + len(intervals)
+    n_panels = len(intervals)
+    if n_panels == 0:
+        raise ValueError("Trace has no intervals to plot.")
     n_cols = 3
     n_rows = int(np.ceil(n_panels / n_cols))
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(13, 4 * n_rows), constrained_layout=True)
     axes = np.array(axes).reshape(-1)
 
-    ax = axes[0]
     xs, ys = ellipse_coords(phi_grid, alpha_val, x_norm, nu_parallel, nu_perp_norm)
-    ax.plot(xs, ys, color="black", linewidth=1.2)
-    _plot_slice_segment(ax, phi_grid, slice_mask, alpha_val, x_norm, nu_parallel, nu_perp_norm)
-    _draw_interval_arc(ax, 0.0, 2 * np.pi, alpha_val, x_norm, nu_parallel, nu_perp_norm)
-    _draw_interval_brackets(ax, 0.0, 2 * np.pi, alpha_val, x_norm, nu_parallel, nu_perp_norm, bracket_len)
-    ax.set_title(f"{title_prefix}: full bracket")
+    current_x, current_y = ellipse_coords(np.asarray([alpha_val]), alpha_val, x_norm, nu_parallel, nu_perp_norm)
+    current_xy = (float(current_x[0]), float(current_y[0]))
 
-    for idx, interval in enumerate(intervals, start=1):
+    for idx, interval in enumerate(intervals):
         ax = axes[idx]
         ax.plot(xs, ys, color="black", linewidth=1.2)
         _plot_slice_segment(ax, phi_grid, slice_mask, alpha_val, x_norm, nu_parallel, nu_perp_norm)
@@ -202,6 +201,7 @@ def plot_iteration_panels(trace_item: dict, problem, out_path: Path, title_prefi
             bracket_len,
         )
         phi_vector = np.asarray(interval["phi_vector"], dtype=float)
+        total_props = int(phi_vector.size)
         px, py = ellipse_coords(phi_vector, alpha_val, x_norm, nu_parallel, nu_perp_norm)
         ax.scatter(px, py, color="tab:red", s=30)
 
@@ -211,12 +211,15 @@ def plot_iteration_panels(trace_item: dict, problem, out_path: Path, title_prefi
             vx, vy = ellipse_coords(vphi, alpha_val, x_norm, nu_parallel, nu_perp_norm)
             ax.scatter(vx, vy, color="darkgreen", s=34)
 
-        if idx - 1 == accepted_interval_idx:
+        ax.scatter([current_xy[0]], [current_xy[1]], color="tab:blue", s=65, marker="^", zorder=7)
+
+        valid_count = int(valid_indices.size)
+        if idx == accepted_interval_idx:
             axa, aya = ellipse_coords(np.asarray([accepted_phi]), alpha_val, x_norm, nu_parallel, nu_perp_norm)
             ax.scatter([float(axa[0])], [float(aya[0])], s=150, marker="s", facecolors="none", edgecolors="black")
-            ax.set_title(f"Interval {idx}: accepted")
+            ax.set_title(f"{title_prefix}: interval {idx + 1} accepted ({valid_count}/{total_props} valid)")
         else:
-            ax.set_title(f"Interval {idx}")
+            ax.set_title(f"{title_prefix}: interval {idx + 1} ({valid_count}/{total_props} valid)")
 
     for ax in axes[:n_panels]:
         ax.set_aspect("equal", adjustable="box")
@@ -227,6 +230,17 @@ def plot_iteration_panels(trace_item: dict, problem, out_path: Path, title_prefi
 
     for ax in axes[n_panels:]:
         ax.axis("off")
+
+    legend_handles = [
+        Line2D([0], [0], color="black", linewidth=1.2, label="Ellipse"),
+        Line2D([0], [0], color="green", linewidth=4.0, alpha=0.7, label="Slice"),
+        Line2D([0], [0], color="lightskyblue", linewidth=3.0, alpha=0.8, label="Interval"),
+        Line2D([0], [0], marker="o", color="tab:red", linestyle="None", markersize=6, label="Nonvalid proposal"),
+        Line2D([0], [0], marker="o", color="darkgreen", linestyle="None", markersize=6, label="Valid proposal"),
+        Line2D([0], [0], marker="^", color="tab:blue", linestyle="None", markersize=7, label="Current state"),
+        Line2D([0], [0], marker="s", markerfacecolor="none", markeredgecolor="black", linestyle="None", markersize=8, label="Accepted state"),
+    ]
+    fig.legend(handles=legend_handles, loc="upper center", bbox_to_anchor=(0.5, 1.02), ncol=4, frameon=False)
 
     return save_figure(fig, out_path, dpi=300)
 
