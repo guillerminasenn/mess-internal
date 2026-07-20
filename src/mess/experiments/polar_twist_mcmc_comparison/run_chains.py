@@ -10,6 +10,11 @@ from typing import Any, Dict, Optional
 import numpy as np
 
 from mess.algorithms.mess import mess_step
+from mess.experiments.common.mess_ellipse_plotting import (
+    plot_contiguous_overlay,
+    plot_iteration_panels,
+    trace_to_jsonable,
+)
 from mess.algorithms.mh import mh_chain
 from mess.experiments.polar_twist_mcmc_comparison.config import ExperimentConfig, build_context
 from mess.experiments.polar_twist_mcmc_comparison.tasks import build_missing_task_list
@@ -19,6 +24,16 @@ from mess.problems import build_polar_twist_problem
 def _save_chain(path: Path, chain: np.ndarray, metadata: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(path, chain=chain, **metadata)
+
+
+def _selected_trace_iters(cfg: ExperimentConfig) -> list[int]:
+    selected = set(int(v) for v in cfg.ellipse_trace_iters if int(v) > 0)
+    if int(cfg.ellipse_trace_window_length) > 0:
+        start = max(1, int(cfg.ellipse_trace_window_start))
+        stop = start + int(cfg.ellipse_trace_window_length)
+        selected.update(range(start, stop))
+    selected = sorted(v for v in selected if v <= int(cfg.n_iters))
+    return selected
 
 
 def run(
@@ -96,9 +111,29 @@ def run(
             chain = np.zeros((cfg.n_iters + 1, x0.shape[0]), dtype=float)
             chain[0] = x0.copy()
             x = x0.copy()
+            trace_iters = _selected_trace_iters(cfg) if cfg.capture_mess_ellipse_traces else []
+            trace_iter_set = set(trace_iters)
+            traces_payload = []
             t0 = time.perf_counter()
             for t in range(cfg.n_iters):
-                x, _, _ = mess_step(x, problem, rng, M=m, use_lp=False)
+                iter_no = t + 1
+                if iter_no in trace_iter_set:
+                    x, _, _, trace = mess_step(
+                        x,
+                        problem,
+                        rng,
+                        M=m,
+                        use_lp=False,
+                        return_trace=True,
+                    )
+                    traces_payload.append(
+                        {
+                            "iteration": iter_no,
+                            "trace": trace_to_jsonable(trace),
+                        }
+                    )
+                else:
+                    x, _, _ = mess_step(x, problem, rng, M=m, use_lp=False)
                 chain[t + 1] = x
             runtime = time.perf_counter() - t0
             post = chain[:: cfg.thin]
@@ -113,17 +148,76 @@ def run(
                 "runtime_sec": runtime,
             }
             _save_chain(out_path, post, metadata)
-            logs.append(
-                {
+
+            if traces_payload:
+                trace_path = out_path.with_name(out_path.stem + "_ellipse_traces.json")
+                trace_doc = {
                     "alg": "mess",
                     "M": m,
-                    "P": None,
-                    "rho": None,
-                    "runtime_sec": runtime,
-                    "path": str(out_path.resolve()),
-                    "n_samples": int(post.shape[0]),
+                    "seed_mcmc": int(cfg.seed_mcmc),
+                    "n_iters": int(cfg.n_iters),
+                    "capture_mode": {
+                        "iters": [int(v) for v in cfg.ellipse_trace_iters],
+                        "window_start": int(cfg.ellipse_trace_window_start),
+                        "window_length": int(cfg.ellipse_trace_window_length),
+                    },
+                    "trace_count": len(traces_payload),
+                    "traces": traces_payload,
                 }
-            )
+                with open(trace_path, "w", encoding="utf-8") as handle:
+                    json.dump(trace_doc, handle, indent=2)
+                logs.append(
+                    {
+                        "alg": "mess",
+                        "M": m,
+                        "P": None,
+                        "rho": None,
+                        "runtime_sec": runtime,
+                        "path": str(out_path.resolve()),
+                        "trace_path": str(trace_path.resolve()),
+                        "n_samples": int(post.shape[0]),
+                    }
+                )
+
+                if cfg.ellipse_plot_enable_in_run:
+                    trace_sorted = sorted(traces_payload, key=lambda item: int(item["iteration"]))
+                    fig_dir = outdir / "mess_ellipse_figures"
+                    fig_dir.mkdir(parents=True, exist_ok=True)
+                    overlay_path = fig_dir / f"mess_M{m}_overlay_n{len(trace_sorted)}.png"
+                    overlay_traces = [
+                        {"iteration": int(item["iteration"]), **item["trace"]}
+                        for item in trace_sorted
+                    ]
+                    plot_contiguous_overlay(
+                        traces=overlay_traces,
+                        problem=problem,
+                        out_path=overlay_path,
+                        title=f"MESS M={m}: contiguous ellipse replay",
+                    )
+                    logs[-1]["trace_overlay_path"] = str(overlay_path.resolve())
+
+                    for item in trace_sorted:
+                        it = int(item["iteration"])
+                        panel_path = fig_dir / f"mess_M{m}_iter{it}_intervals.png"
+                        plot_iteration_panels(
+                            trace_item=item["trace"],
+                            problem=problem,
+                            out_path=panel_path,
+                            title_prefix=f"Iteration {it}",
+                        )
+                    logs[-1]["trace_panel_dir"] = str(fig_dir.resolve())
+            else:
+                logs.append(
+                    {
+                        "alg": "mess",
+                        "M": m,
+                        "P": None,
+                        "rho": None,
+                        "runtime_sec": runtime,
+                        "path": str(out_path.resolve()),
+                        "n_samples": int(post.shape[0]),
+                    }
+                )
         elif alg == "mh":
             rng = np.random.default_rng(cfg.seed_mcmc)
             t0 = time.perf_counter()
@@ -244,6 +338,24 @@ def run(
             ),
         }
         for item in logs
+    )
+    summary["artifacts"].extend(
+        {
+            "kind": "diagnostic",
+            "path": item["trace_path"],
+            "description": f"Exact MESS ellipse playback traces for M={item['M']}",
+        }
+        for item in logs
+        if item.get("trace_path")
+    )
+    summary["artifacts"].extend(
+        {
+            "kind": "figure",
+            "path": item["trace_overlay_path"],
+            "description": f"Run-phase contiguous MESS ellipse overlay for M={item['M']}",
+        }
+        for item in logs
+        if item.get("trace_overlay_path")
     )
 
     return summary

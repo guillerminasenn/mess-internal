@@ -44,6 +44,18 @@ Use this skill when the user asks for figures/checklists/reports from an experim
     - `ess_msjd` -> `python -m <repo>.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.ess_msjd_plots`
     - `pairplots` -> `python -m <repo>.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.pairplots`
     - `parity_checklist` -> `python -m <repo>.experiments.solute_transport_dim_sweep_shared_draws_pcn_mpcn.report_parity_checklist`
+- If `<experiment>` is `polar_twist_mcmc_comparison`:
+  - Full workflow:
+    - `python -m <repo>.experiments.polar_twist_mcmc_comparison.report_workflow`
+  - Supported subsets:
+    - `visual_checks` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.visual_checks`
+    - `traceplots` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.traceplots`
+    - `panels` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.panels`
+    - `ess_msjd` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.ess_msjd_plots`
+    - `rejection` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.rejection_plots`
+    - `pairplots` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.pairplots`
+    - `ellipse_diagnostics` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics`
+    - `parity_checklist` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.report_parity_checklist`
 - Else:
   - Use only report modules declared in `instructions/experiments/<experiment>.md`.
 
@@ -51,6 +63,11 @@ Use this skill when the user asks for figures/checklists/reports from an experim
 - If any selected report module depends on metrics (for example ESS/MSJD plots):
   - Ensure required metrics tables exist first.
   - If missing, run the metrics workflow for `<experiment>` before report plotting.
+- If `ellipse_diagnostics` is requested:
+  - Ensure required MESS trace sidecars exist; otherwise ask user to re-run chain generation with trace capture enabled.
+
+## Related skill handoff
+- If the user specifically requests MESS ellipse playback plots, prefer invoking `plot-ellipses`.
 
 ## Output checks
 - Validate report outputs declared in `instructions/experiments/<experiment>.md`.

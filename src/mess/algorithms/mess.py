@@ -14,6 +14,7 @@ def mess_step(
     lam=0.1,
     P0=None,
     return_diagnostics=False,
+    return_trace=False,
 ):
     """Perform a MESS step.
     Parameters
@@ -44,6 +45,9 @@ def mess_step(
     return_diagnostics : bool
         If True, return per-iteration diagnostics including the accepted
         proposal index and distances to all candidates.
+    return_trace : bool
+        If True, return a full step trace suitable for exact ellipse
+        playback plots.
 
     Returns
     -------
@@ -55,10 +59,13 @@ def mess_step(
         Transition matrix used to sample the new state (only if lp=True).
     diagnostics : list
         Per-iteration diagnostic data (only if return_diagnostics=True).
+    trace : dict
+        Exact step trace payload (only if return_trace=True).
     """
     # Initialize transition matrix to None
     P1 = None
     diagnostics = [] if return_diagnostics else None
+    trace_intervals = [] if return_trace else None
 
     # Center the current state and the auxiliary sample from the prior
     x_centered = x - problem.prior_mean()
@@ -69,6 +76,16 @@ def mess_step(
 
     # Sample alpha, the angle corresponding to the current state
     alpha = rng.uniform(0, 2*np.pi)
+
+    trace_header = None
+    if return_trace:
+        trace_header = {
+            'x': np.asarray(x, dtype=float).copy(),
+            'x_centered': np.asarray(x_centered, dtype=float).copy(),
+            'nu_centered': np.asarray(nu_centered, dtype=float).copy(),
+            'alpha': float(alpha),
+            'logy': float(logy),
+        }
 
     # Initialize the angle interval
     phi_min = 0
@@ -95,6 +112,18 @@ def mess_step(
 
         # Compute A_i, the set of indexes of the candidate proposals
         A = np.where(log_likelihoods > logy)[0]
+
+        trace_entry = None
+        if return_trace:
+            trace_entry = {
+                'phi_min': float(phi_min),
+                'phi_max': float(phi_max),
+                'phi_vector': phi_vector.copy(),
+                'log_likelihoods': log_likelihoods.copy(),
+                'valid_indices': A.copy(),
+                'accepted_index': None,
+            }
+            trace_intervals.append(trace_entry)
 
         diag_entry = None
         if return_diagnostics:
@@ -163,9 +192,24 @@ def mess_step(
                 i = rng.choice(A)
             if return_diagnostics and diag_entry is not None:
                 diag_entry['accepted_index'] = int(i)
+            if return_trace and trace_entry is not None:
+                trace_entry['accepted_index'] = int(i)
 
+            if return_trace:
+                trace = {
+                    **trace_header,
+                    'intervals': trace_intervals,
+                    'accepted_phi': float(phi_vector[i]),
+                    'accepted_interval_index': len(trace_intervals) - 1,
+                    'accepted_index': int(i),
+                }
+
+            if return_diagnostics and return_trace:
+                return x_prop_vector[:, i], nr_intervals, P1, diagnostics, trace
             if return_diagnostics:
                 return x_prop_vector[:, i], nr_intervals, P1, diagnostics
+            if return_trace:
+                return x_prop_vector[:, i], nr_intervals, P1, trace
             return x_prop_vector[:, i], nr_intervals, P1
 
         # Otherwise, shrink the angle interval

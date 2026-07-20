@@ -231,6 +231,14 @@ Deliverables:
 Approval gate:
 - Final sign-off for stage-by-stage self-implementation.
 
+## Addendum: Historical MESS Ellipse Playback
+
+As of 2026-07-20, exact historical MESS ellipse playback is tracked in:
+- `instructions/plans/2026-07-20_mess_ellipse_historical_playback_staged_plan.md`
+
+Key decision:
+- Ellipse diagnostics must use exact historical trace sidecars captured during chain generation when reproducibility is required.
+
 ## Proposed Execution Order
 
 1. Stage 0

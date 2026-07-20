@@ -90,11 +90,31 @@ Job wrapper entrypoint:
 Estimations artifacts:
 - chain files and run metadata
 - config snapshots and run manifests
+- optional MESS historical playback trace sidecars for selected iterations
 
 Reports artifacts:
 - diagnostics tables (ESS/MSJD, runtime, acceptance)
 - figures mirroring the target report workflow style where meaningful for fixed d=2
 - parity checklist manifests
+- MESS ellipse playback figures when trace sidecars are present
+
+## MESS Ellipse Diagnostics (Exact Playback)
+
+Goal:
+- Support exact historical ellipse playback for selected MESS iterations.
+
+Capture rules:
+- Enable capture via experiment config controls.
+- Capture only targeted iteration sets and/or contiguous windows.
+- Persist trace sidecars alongside MESS chain artifacts.
+
+Rendering rules:
+- Report workflow loads sidecar traces and generates:
+	- contiguous ellipse overlays
+	- interval-level proposal/acceptance panels
+
+Reproducibility:
+- Playback plots must reflect exact historical MESS proposals from the original run, not approximate local replay.
 
 ## Policy Alignment
 - Keep problem definitions in `src/mess/problems/`.

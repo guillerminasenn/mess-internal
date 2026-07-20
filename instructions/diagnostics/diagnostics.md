@@ -64,3 +64,24 @@ Store aggregation outputs in diagnostics payloads with clear field names and doc
 ## Solute-transport note
 
 High-dimensional observable summaries used historically in solute-transport experiments are a valid instance of this general policy, not a special-case policy limited to one algorithm family.
+
+## MESS Historical Playback Diagnostics
+
+For ellipse diagnostics tied to MESS internals, use exact historical playback traces rather than approximate replay whenever reproducibility is required.
+
+Required workflow:
+1. During chain generation, capture MESS step traces at explicitly requested iterations.
+2. Persist those traces as sidecar diagnostics artifacts (separate from chain `.npz` files).
+3. During report generation, render ellipse diagnostics from those sidecar traces.
+
+Required metadata for each playback trace set:
+- algorithm settings (`M`, `n_iters`)
+- RNG seed used for the original chain (`seed_mcmc`)
+- captured iteration numbers
+- trace payload fields used for plotting (`alpha`, `logy`, interval bounds, proposal angles, accepted proposal)
+
+Reproducibility requirement:
+- Given identical code, config, and sidecar traces, report-phase ellipse figures must be deterministic.
+
+Storage note:
+- Keep trace capture scoped to requested iterations and windows to bound diagnostics storage growth.

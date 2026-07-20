@@ -59,6 +59,12 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, object]:
             "exists": (fig_root / "pairplots").exists(),
             "description": "Pairplot output directory exists.",
         },
+        {
+            "name": "mess_ellipse_diagnostics_directory",
+            "expected_path": str((fig_root / "mess_ellipse_diagnostics").resolve()),
+            "exists": (fig_root / "mess_ellipse_diagnostics").exists(),
+            "description": "MESS ellipse diagnostics output directory exists (if traces were captured).",
+        },
     ]
 
     md_path = manifests_dir / "report_parity_checklist.md"

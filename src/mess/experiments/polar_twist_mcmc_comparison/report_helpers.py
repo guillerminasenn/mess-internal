@@ -8,6 +8,7 @@ from typing import Dict, Optional
 
 import numpy as np
 
+from mess.experiments.common.mess_ellipse_plotting import trace_from_jsonable
 from mess.experiments.polar_twist_mcmc_comparison.config import ExperimentConfig, build_context
 from mess.experiments.polar_twist_mcmc_comparison.naming import chain_path
 from mess.problems import build_polar_twist_problem
@@ -31,6 +32,26 @@ def load_chain(cfg: ExperimentConfig, estimations_dir: Path, alg: str, M=None, P
         return None, path
     with np.load(path) as payload:
         return payload["chain"], path
+
+
+def load_mess_ellipse_traces(cfg: ExperimentConfig, estimations_dir: Path, M: int):
+    chain_file = chain_path(estimations_dir, alg="mess", M=M)
+    trace_file = chain_file.with_name(chain_file.stem + "_ellipse_traces.json")
+    if not trace_file.exists():
+        return [], trace_file
+    with open(trace_file, "r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+
+    traces = []
+    for item in payload.get("traces", []):
+        traces.append(
+            {
+                "iteration": int(item["iteration"]),
+                **trace_from_jsonable(item["trace"]),
+            }
+        )
+    traces.sort(key=lambda t: int(t["iteration"]))
+    return traces, trace_file
 
 
 def load_metrics_rows(cfg: ExperimentConfig):

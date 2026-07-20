@@ -54,6 +54,13 @@ class ExperimentConfig:
     mh_proposal_std: float = 0.2
     ep_replicates: int = 20
 
+    # Exact MESS ellipse playback capture controls.
+    capture_mess_ellipse_traces: bool = False
+    ellipse_trace_iters: List[int] = field(default_factory=list)
+    ellipse_trace_window_start: int = 0
+    ellipse_trace_window_length: int = 0
+    ellipse_plot_enable_in_run: bool = False
+
     # Run-layout labels.
     dataset: str = "polar_twist_mcmc_comparison"
     algorithm: str = "polar_twist_mcmc_comparison"
@@ -73,6 +80,13 @@ class ExperimentConfig:
         }
 
     def algorithm_config(self) -> Dict[str, Any]:
+        ellipse_trace_cfg = {
+            "enabled": bool(self.capture_mess_ellipse_traces),
+            "iters": [int(v) for v in self.ellipse_trace_iters],
+            "window_start": int(self.ellipse_trace_window_start),
+            "window_length": int(self.ellipse_trace_window_length),
+            "plot_in_run": bool(self.ellipse_plot_enable_in_run),
+        }
         return {
             "algorithm": self.algorithm,
             "n_iters": int(self.n_iters),
@@ -88,6 +102,7 @@ class ExperimentConfig:
             "mh_proposal_cov": self.mh_proposal_cov,
             "mh_proposal_std": float(self.mh_proposal_std),
             "ep_replicates": int(self.ep_replicates),
+            "ellipse_trace": ellipse_trace_cfg,
         }
 
     def execution_config(self, grid_count: int = 1, grid_index: int = 0) -> Dict[str, Any]:

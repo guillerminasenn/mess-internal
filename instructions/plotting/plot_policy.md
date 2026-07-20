@@ -31,3 +31,16 @@
 ## Trace Plots
 - Use a fixed window of 30,000 iterations after burn-in for comparability.
 - Use a horizontal shared legend above the subplot grid.
+
+## MESS Ellipse Playback Plots
+- Ellipse diagnostics for MESS must use full historical playback traces captured during the original chain run.
+- Do not use approximate local replay for publication or parity diagnostics when exact historical playback is requested.
+- Trace capture is controlled by experiment config and should target specific iterations to keep storage bounded.
+- Historical playback outputs support two figure families:
+  - contiguous-iteration ellipse overlays
+  - interval-level panels with proposals, valid proposals, and accepted state
+- Slice sections on the ellipse must be rendered in green.
+- Interval arcs should use a distinct light-blue family, with interval boundary brackets visible.
+- Nonvalid proposals should use red markers; valid proposals should use dark-green markers; accepted proposal should be a hollow square.
+- Figure naming should include algorithm settings and iteration anchors (for example `mess_M50_iter200000_intervals.png`).
+- Legends should remain outside dense panels whenever possible.
