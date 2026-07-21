@@ -55,6 +55,7 @@ Use this skill when the user asks for figures/checklists/reports from an experim
     - `rejection` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.rejection_plots`
     - `pairplots` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.pairplots`
     - `ellipse_diagnostics` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics`
+    - `mess_ess_vs_m` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ess_vs_m_plots`
     - `parity_checklist` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.report_parity_checklist`
 - Else:
   - Use only report modules declared in `instructions/experiments/<experiment>.md`.

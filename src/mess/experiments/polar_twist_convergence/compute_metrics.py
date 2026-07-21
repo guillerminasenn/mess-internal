@@ -13,7 +13,7 @@ from mess.experiments.polar_twist_convergence.report_helpers import report_dirs,
 def run(config: Optional[ExperimentConfig] = None) -> Dict[str, object]:
     cfg = config or ExperimentConfig()
     dirs = report_dirs(cfg)
-    out_dir = dirs["reports_dir"] / "tables"
+    out_dir = dirs["estimations_dir"] / "tables"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     source = resolve_sources(cfg)

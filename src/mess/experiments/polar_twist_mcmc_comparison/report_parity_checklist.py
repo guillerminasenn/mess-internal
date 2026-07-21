@@ -48,6 +48,18 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, object]:
             "description": "ESS/MSJD rho summary plot (mean).",
         },
         {
+            "name": "mess_ess_vs_m_raw",
+            "expected_path": str((fig_root / "ess_msjd_vs_rho" / "mess_ess_vs_M_raw.png").resolve()),
+            "exists": (fig_root / "ess_msjd_vs_rho" / "mess_ess_vs_M_raw.png").exists(),
+            "description": "MESS-only raw ESS vs M (x1, x2, mean).",
+        },
+        {
+            "name": "mess_ess_vs_m_availability",
+            "expected_path": str((fig_root / "ess_msjd_vs_rho" / "mess_ess_vs_M_availability.json").resolve()),
+            "exists": (fig_root / "ess_msjd_vs_rho" / "mess_ess_vs_M_availability.json").exists(),
+            "description": "Availability status for normalized MESS ESS-vs-M plots.",
+        },
+        {
             "name": "rejection_vs_rho",
             "expected_path": str((fig_root / "rejection" / "rejection_vs_rho.png").resolve()),
             "exists": (fig_root / "rejection" / "rejection_vs_rho.png").exists(),

@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, List
 
+import numpy as np
+
 from mess.experiments.polar_twist_distance_comparison.naming import chain_path, is_chain_readable
 
 
@@ -23,6 +25,15 @@ def build_missing_task_list(cfg, outdir: Path, uniform_exists_external: bool = F
         item = dict(task)
         item["path"] = str(path)
         if is_chain_readable(path):
+            try:
+                with np.load(path) as payload:
+                    has_steps = "mess_subiters_per_iter" in payload
+                if not has_steps:
+                    item["requires_refresh"] = True
+                    missing.append(item)
+            except Exception:
+                item["requires_refresh"] = True
+                missing.append(item)
             continue
         missing.append(item)
     return missing

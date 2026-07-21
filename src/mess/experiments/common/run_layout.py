@@ -51,14 +51,18 @@ def build_run_layout(
     run_id: str,
     sweep_mode: str,
 ) -> Dict[str, Path]:
-    """Return run directories for estimations and reports, creating them if needed."""
+    """Return run directories with eager estimations creation and lazy reports materialization."""
     estimations_dir = repo_root / "estimations" / dataset / data_id / sweep_mode / run_id
     reports_dir = repo_root / "reports" / dataset / data_id / sweep_mode / run_id
     estimations_dir.mkdir(parents=True, exist_ok=True)
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    for name in ("diagnostics", "tables", "manifests"):
-        (reports_dir / name).mkdir(parents=True, exist_ok=True)
     return {
         "estimations_dir": estimations_dir,
         "reports_dir": reports_dir,
     }
+
+
+def ensure_reports_subdir(reports_dir: Path, name: str) -> Path:
+    """Create and return a reports subdirectory only when report artifacts are emitted."""
+    target = reports_dir / name
+    target.mkdir(parents=True, exist_ok=True)
+    return target

@@ -12,6 +12,7 @@ import numpy as np
 from mess.experiments.common.artifacts import ArtifactRegistry
 from mess.experiments.common.plotting_utils import apply_publication_style
 from mess.experiments.polar_twist_distance_comparison.config import ExperimentConfig, build_context
+from mess.experiments.polar_twist_distance_comparison.cross_m_comparison import run as run_cross_m
 from mess.experiments.polar_twist_distance_comparison.ess_msjd_plots import run as run_ess_msjd
 from mess.experiments.polar_twist_distance_comparison.panels import run as run_panels
 from mess.experiments.polar_twist_distance_comparison.traceplots import run as run_traceplots
@@ -27,7 +28,7 @@ def run(config: Optional[ExperimentConfig] = None) -> None:
     ctx = build_context(cfg)
     registry = ArtifactRegistry()
 
-    tables_dir = ctx["reports_dir"] / "tables"
+    tables_dir = ctx["estimations_dir"] / "tables"
     fig_dir = ctx["reports_dir"] / "figures"
     fig_dir.mkdir(parents=True, exist_ok=True)
 
@@ -96,9 +97,22 @@ def run(config: Optional[ExperimentConfig] = None) -> None:
     trace = run_traceplots(cfg)
     panels = run_panels(cfg)
     ess = run_ess_msjd(cfg)
+    cross_m = run_cross_m(cfg)
     for group in (trace, panels, ess):
         for item in group.get("artifacts", []):
             registry.add(path=Path(item["path"]), kind=item["kind"], description=item["description"])
+
+    registry.add(path=Path(cross_m["json"]), kind="table", description="Cross-M metrics summary across transition-matrix variants.")
+    registry.add(path=Path(cross_m["ess_tex"]), kind="table", description="Cross-M ESS LaTeX table.")
+    registry.add(path=Path(cross_m["msjd_tex"]), kind="table", description="Cross-M MSJD LaTeX table.")
+    registry.add(path=Path(cross_m["ess_fig"]), kind="figure", description="Grouped cross-M ESS figure.")
+    registry.add(path=Path(cross_m["msjd_fig"]), kind="figure", description="Grouped cross-M MSJD figure.")
+    registry.add(path=Path(cross_m["mess_raw_fig"]), kind="figure", description="MESS-only raw ESS vs M by variant.")
+    if cross_m.get("mess_energy_fig"):
+        registry.add(path=Path(cross_m["mess_energy_fig"]), kind="figure", description="MESS-only ESS per energy likelihood evaluation vs M by variant.")
+    if cross_m.get("mess_wallclock_fig"):
+        registry.add(path=Path(cross_m["mess_wallclock_fig"]), kind="figure", description="MESS-only ESS per parallel likelihood step vs M by variant.")
+    registry.add(path=Path(cross_m["mess_availability"]), kind="metadata", description="Availability status for normalized cross-M MESS ESS-vs-M figures.")
 
     registry.add(path=metrics_path, kind="table", description="ESS/MSJD summary table used for report.")
     registry.add(path=runtime_path, kind="table", description="Runtime summary table used for report.")

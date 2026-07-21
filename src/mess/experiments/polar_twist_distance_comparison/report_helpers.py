@@ -19,7 +19,6 @@ from mess.experiments.polar_twist_distance_comparison.naming import chain_path
 def report_dirs(cfg: ExperimentConfig) -> Dict[str, Path]:
     ctx = build_context(cfg)
     fig_root = ctx["reports_dir"] / "figures"
-    fig_root.mkdir(parents=True, exist_ok=True)
     return {
         "reports_dir": ctx["reports_dir"],
         "estimations_dir": ctx["estimations_dir"],

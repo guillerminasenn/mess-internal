@@ -8,6 +8,7 @@ from typing import Optional
 from mess.experiments.common.artifacts import ArtifactRegistry
 from mess.experiments.polar_twist_mcmc_comparison.config import ExperimentConfig, build_context
 from mess.experiments.polar_twist_mcmc_comparison.ess_msjd_plots import run as run_ess_msjd
+from mess.experiments.polar_twist_mcmc_comparison.mess_ess_vs_m_plots import run as run_mess_ess_vs_m
 from mess.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics import (
     run as run_mess_ellipse_diagnostics,
 )
@@ -28,11 +29,12 @@ def run(config: Optional[ExperimentConfig] = None) -> None:
     trace = run_traceplots(cfg)
     panels = run_panels(cfg)
     ess = run_ess_msjd(cfg)
+    mess_vs_m = run_mess_ess_vs_m(cfg)
     ellipse = run_mess_ellipse_diagnostics(cfg)
     rej = run_rejection(cfg)
     pair = run_pairplots(cfg)
 
-    for group in (visual, trace, panels, ess, ellipse, rej, pair):
+    for group in (visual, trace, panels, ess, mess_vs_m, ellipse, rej, pair):
         for item in group.get("artifacts", []):
             registry.add(path=Path(item["path"]), kind=item["kind"], description=item["description"])
 

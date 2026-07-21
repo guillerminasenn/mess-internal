@@ -43,6 +43,7 @@ Use deterministic run layout:
 Path symmetry requirement:
 - For a given `dataset`, `data_id`, `sweep|fixed`, and `run_id`, write computational artifacts under the matching `estimations/` subtree and reporting artifacts under the matching `reports/` subtree.
 - Keep config snapshots and manifests in both phases as needed so runs can be reproduced and audited from either root.
+- Path symmetry does not require eager creation of `reports/.../<run_id>/`; materialize report run directories only when significant report artifacts are emitted (figures or `tables/*.tex`).
 
 `data_id` should encode only stable data-generation settings.
 `run_id` should encode algorithm/statistical settings.
@@ -50,6 +51,7 @@ Path symmetry requirement:
 Within each run:
 - `estimations/`: chains, diagnostics payloads, metrics payloads, config snapshots.
 - `reports/`: figures, tables, manifests, parity/checklist outputs.
+- If a stage emits only non-significant JSON diagnostics/tables and no figures/LaTeX tables, keep those outputs under `estimations/` to avoid empty report runs.
 
 ## Interaction with `jobs/`
 Job wrappers should live under:

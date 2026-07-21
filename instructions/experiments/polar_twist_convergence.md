@@ -56,9 +56,9 @@ Reports:
 
 ## Artifact Expectations
 - diagnostics:
-  - `reports/.../diagnostics/source_chain_summary.json`
+  - `estimations/.../diagnostics/source_chain_summary.json`
 - tables:
-  - `reports/.../tables/source_availability.json`
+  - `estimations/.../tables/source_availability.json`
 - figures:
   - `reports/.../figures/warmup_traceplots/traceplots_warmup_x1.png`
   - `reports/.../figures/warmup_traceplots/traceplots_warmup_x2.png`
@@ -66,3 +66,4 @@ Reports:
 ## Notes
 - Missing source chains are shown in subplot panels as `missing chain`.
 - This experiment intentionally reuses historical outputs and does not alter source run folders.
+- `reports/.../<run_id>/` should be created only when figure outputs are emitted.

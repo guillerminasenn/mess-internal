@@ -27,6 +27,11 @@ def main() -> None:
     parser.add_argument("--grid-index", type=int, default=0, help="This worker index in [0, grid-count).")
     parser.add_argument("--dry-run", action="store_true", help="Print tasks only, do not run.")
     parser.add_argument(
+        "--replace-existing-identical",
+        action="store_true",
+        help="Overwrite existing same-config chains in-place under the same run directory.",
+    )
+    parser.add_argument(
         "--capture-ellipse-traces",
         action="store_true",
         help="Capture exact MESS ellipse traces for selected iterations.",
@@ -48,6 +53,12 @@ def main() -> None:
         type=str,
         default="",
         help="Comma-separated explicit iteration list for ellipse trace capture.",
+    )
+    parser.add_argument(
+        "--run-id-override",
+        type=str,
+        default="",
+        help="Optional explicit run_id target (for example run_h299bb8812082).",
     )
     args = parser.parse_args()
 
@@ -74,8 +85,16 @@ def main() -> None:
         cfg.ellipse_trace_iters = [
             int(v.strip()) for v in args.ellipse_iters.split(",") if v.strip()
         ]
+    if args.run_id_override.strip():
+        cfg.run_id_override = args.run_id_override.strip()
 
-    summary = run(grid_count=args.grid_count, grid_index=args.grid_index, dry_run=args.dry_run, config=cfg)
+    summary = run(
+        grid_count=args.grid_count,
+        grid_index=args.grid_index,
+        dry_run=args.dry_run,
+        replace_existing_identical=args.replace_existing_identical,
+        config=cfg,
+    )
 
     print("\nRun summary:")
     print(f"- Estimations dir: {summary['estimations_dir']}")

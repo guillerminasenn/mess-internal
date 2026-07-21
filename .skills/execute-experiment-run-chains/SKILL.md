@@ -22,6 +22,8 @@ Use this skill when the user asks to run (or dry-run) chain generation for any e
 - Prefer job wrapper for worker/grid execution.
 - Use `--dry-run` first unless user explicitly requests full execution.
 - Keep `grid-count` and `grid-index` explicit for reproducibility.
+- When normalized MESS ESS-vs-M reporting is expected, ensure generated MESS chains include persisted `mess_subiters_per_iter`.
+- For statistically identical reruns that only enrich stored diagnostics, prefer in-place replacement under the same `run_id` directory (for example via `--replace-existing-identical` when supported).
 
 ## Environment placeholder
 - `<activate_env_command>` means the repository-specific environment activation command

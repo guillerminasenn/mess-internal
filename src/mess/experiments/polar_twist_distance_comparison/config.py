@@ -48,6 +48,7 @@ class ExperimentConfig:
     dataset: str = "polar_twist_distance_comparison"
     algorithm: str = "polar_twist_distance_comparison"
     sweep_mode: str = "fixed"
+    run_id_override: Optional[str] = None
 
     def data_config(self) -> Dict[str, Any]:
         return {
@@ -98,7 +99,7 @@ def build_context(cfg: ExperimentConfig, grid_count: int = 1, grid_index: int = 
     ensure_src_paths(repo_root)
 
     data_id = short_hash(cfg.data_config(), prefix="data_h")
-    run_id = short_hash(cfg.algorithm_config(), prefix="run_h")
+    run_id = cfg.run_id_override or short_hash(cfg.algorithm_config(), prefix="run_h")
     layout = build_run_layout(repo_root, cfg.dataset, data_id, run_id, cfg.sweep_mode)
 
     payload = {

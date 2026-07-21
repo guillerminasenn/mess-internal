@@ -79,6 +79,7 @@ Report module entrypoints:
 - `traceplots.py`
 - `panels.py`
 - `ess_msjd_plots.py`
+- `mess_ess_vs_m_plots.py`
 - `rejection_plots.py`
 - `pairplots.py`
 - `report_parity_checklist.py`
@@ -95,8 +96,17 @@ Estimations artifacts:
 Reports artifacts:
 - diagnostics tables (ESS/MSJD, runtime, acceptance)
 - figures mirroring the target report workflow style where meaningful for fixed d=2
+- MESS-only ESS-vs-M figures under `figures/ess_msjd_vs_rho/`:
+	- `mess_ess_vs_M_raw.png`
+	- `mess_ess_vs_M_per_energy_lik_eval.png` (when exact sub-iteration counts are available)
+	- `mess_ess_vs_M_per_parallel_lik_step.png` (when exact sub-iteration counts are available)
+	- `mess_ess_vs_M_availability.json` availability manifest
 - parity checklist manifests
 - MESS ellipse playback figures when trace sidecars are present
+
+Storage rule for non-significant artifacts:
+- Availability/runtime/metrics JSON artifacts should be written under `estimations/.../<run_id>/`.
+- `reports/.../<run_id>/` should be materialized lazily when significant report outputs are written (figures or `tables/*.tex`).
 
 ## MESS Ellipse Diagnostics (Exact Playback)
 
@@ -121,3 +131,7 @@ Reproducibility:
 - Do not modify or delete `.npz` contents.
 - Do not run experiments primarily from notebooks.
 - Any implementation-stage policy changes must update `instructions/` in the same workstream.
+
+## Identical-rerun replacement rule
+- For statistically identical reruns (same data/problem/algorithm seeds and parameters), reuse the same deterministic `run_id` directory.
+- If rerunning only to enrich chain artifacts (for example adding `mess_subiters_per_iter`), replacing existing chains in-place is allowed and preferred over creating a new run directory.

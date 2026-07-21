@@ -31,6 +31,7 @@ Use this skill when the user asks to compute metrics after chains are available.
 ## Outputs to verify (from spec)
 - Read expected metric artifacts from `instructions/experiments/<experiment>.md`.
 - Validate presence of diagnostics/tables/manifests declared there.
+- If the experiment includes MESS-over-M sweeps, verify rows expose MESS cost fields and normalized ESS fields when `mess_subiters_per_iter` exists; otherwise verify explicit unavailability flags/NaNs are present.
 
 ## Solute transport branch
 - If `<experiment>` is `solute_transport_dim_sweep_shared_draws_pcn_mpcn`:

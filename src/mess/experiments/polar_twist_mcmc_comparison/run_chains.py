@@ -107,6 +107,7 @@ def run(
     grid_count: int = 1,
     grid_index: int = 0,
     dry_run: bool = False,
+    replace_existing_identical: bool = False,
     config: Optional[ExperimentConfig] = None,
 ) -> Dict[str, Any]:
     """Run chain generation for one shard and return execution summary."""
@@ -123,6 +124,7 @@ def run(
         "total_missing_tasks": len(tasks),
         "assigned_tasks": len(my_tasks),
         "dry_run": bool(dry_run),
+        "replace_existing_identical": bool(replace_existing_identical),
         "estimations_dir": str(ctx["estimations_dir"]),
         "reports_dir": str(ctx["reports_dir"]),
         "artifacts": [],
@@ -135,7 +137,8 @@ def run(
                 f"DRY_RUN {task['alg']:4s} "
                 f"M={str(task.get('M')):>4s} "
                 f"P={str(task.get('P')):>4s} "
-                f"rho={str(task.get('rho')):>8s}"
+                f"rho={str(task.get('rho')):>8s} "
+                f"refresh={bool(task.get('requires_refresh', False))}"
             )
         return summary
 
@@ -168,24 +171,29 @@ def run(
     logs = []
     for task in my_tasks:
         out_path = Path(str(task["path"]))
-        alg = str(task["alg"]) 
-        if out_path.exists() and not (
-            alg == "mess" and cfg.capture_mess_ellipse_traces and _selected_trace_iters(cfg)
-        ):
+        alg = str(task["alg"])
+        requires_refresh = bool(task.get("requires_refresh", False))
+        run_for_trace_only = alg == "mess" and cfg.capture_mess_ellipse_traces and bool(_selected_trace_iters(cfg))
+        should_replace = bool(replace_existing_identical and out_path.exists())
+        if out_path.exists() and not (run_for_trace_only or requires_refresh or should_replace):
             continue
 
         if alg == "mess":
             m = int(task["M"])
             trace_iters = _selected_trace_iters(cfg) if cfg.capture_mess_ellipse_traces else []
             runtime = float("nan")
-            if not out_path.exists():
+            if (not out_path.exists()) or requires_refresh or should_replace:
                 rng = np.random.default_rng(cfg.seed_mcmc)
                 chain = np.zeros((cfg.n_iters + 1, x0.shape[0]), dtype=float)
+                mess_subiters_per_iter = np.zeros((cfg.n_iters,), dtype=int)
                 chain[0] = x0.copy()
                 x = x0.copy()
                 t0 = time.perf_counter()
                 for t in range(cfg.n_iters):
-                    x, _, _ = mess_step(x, problem, rng, M=m, use_lp=False)
+                    x, nr_intervals, _ = mess_step(x, problem, rng, M=m, use_lp=False)
+                    # A MESS iteration evaluates one proposal batch per interval narrowing round,
+                    # including the final accepted round.
+                    mess_subiters_per_iter[t] = int(nr_intervals) + 1
                     chain[t + 1] = x
                 runtime = time.perf_counter() - t0
                 post = chain[:: cfg.thin]
@@ -198,6 +206,7 @@ def run(
                     "seed_mcmc": cfg.seed_mcmc,
                     "seed_data": cfg.data_seed,
                     "runtime_sec": runtime,
+                    "mess_subiters_per_iter": mess_subiters_per_iter,
                 }
                 _save_chain(out_path, post, metadata)
             else:
@@ -222,6 +231,8 @@ def run(
                         "path": str(out_path.resolve()),
                         "trace_path": str(trace_path.resolve()),
                         "n_samples": int(post.shape[0]),
+                        "requires_refresh": requires_refresh,
+                        "replaced_existing": should_replace or requires_refresh,
                     }
                 )
 
@@ -262,6 +273,8 @@ def run(
                         "runtime_sec": runtime,
                         "path": str(out_path.resolve()),
                         "n_samples": int(post.shape[0]),
+                        "requires_refresh": requires_refresh,
+                        "replaced_existing": should_replace or requires_refresh,
                     }
                 )
         elif alg == "mh":
@@ -414,6 +427,11 @@ def main() -> None:
     parser.add_argument("--grid-count", type=int, default=1, help="Total number of workers.")
     parser.add_argument("--grid-index", type=int, default=0, help="This worker index in [0, grid-count).")
     parser.add_argument("--dry-run", action="store_true", help="Print assigned tasks only, do not run.")
+    parser.add_argument(
+        "--replace-existing-identical",
+        action="store_true",
+        help="Overwrite existing same-config chains in-place under the same run directory.",
+    )
     args = parser.parse_args()
 
     if args.grid_count < 1:
@@ -421,7 +439,12 @@ def main() -> None:
     if args.grid_index < 0 or args.grid_index >= args.grid_count:
         raise ValueError("grid-index must be in [0, grid-count)")
 
-    summary = run(grid_count=args.grid_count, grid_index=args.grid_index, dry_run=args.dry_run)
+    summary = run(
+        grid_count=args.grid_count,
+        grid_index=args.grid_index,
+        dry_run=args.dry_run,
+        replace_existing_identical=args.replace_existing_identical,
+    )
     print("\nRun summary:")
     print(f"- Estimations dir: {summary['estimations_dir']}")
     print(f"- Reports dir: {summary['reports_dir']}")

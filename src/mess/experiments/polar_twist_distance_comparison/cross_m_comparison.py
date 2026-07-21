@@ -163,6 +163,47 @@ def _plot_grouped(rows: List[Dict[str, object]], out_path: Path, metric_prefix: 
     return save_figure(fig, out_path, dpi=350)
 
 
+def _plot_mess_vs_m_by_variant(
+    rows: List[Dict[str, object]],
+    out_path: Path,
+    key_x1: str,
+    key_x2: str,
+    key_mean: str,
+    title: str,
+    y_label: str,
+) -> Path:
+    variant_order = ["uniform", "lp_angular", "lp_euclidean"]
+    variant_labels = {
+        "uniform": "uniform",
+        "lp_angular": "LP angular",
+        "lp_euclidean": "LP euclidean",
+    }
+
+    by_variant: Dict[str, List[Dict[str, object]]] = {}
+    for row in rows:
+        by_variant.setdefault(str(row["variant"]), []).append(row)
+
+    fig, axes = plt.subplots(1, 3, figsize=(14.2, 4.2), sharex=True, constrained_layout=True)
+    panel_specs = [(key_x1, r"$x_1$"), (key_x2, r"$x_2$"), (key_mean, "mean")]
+    for ax, (metric_key, subtitle) in zip(axes, panel_specs):
+        for variant in variant_order:
+            vr = sorted(by_variant.get(variant, []), key=lambda item: int(item["M"]))
+            if not vr:
+                continue
+            m_vals = np.asarray([int(item["M"]) for item in vr], dtype=int)
+            vals = np.asarray([float(item.get(metric_key, np.nan)) for item in vr], dtype=float)
+            ax.plot(m_vals, vals, marker="o", linewidth=1.3, label=variant_labels[variant])
+        ax.set_title(subtitle)
+        ax.set_xlabel("M")
+        ax.grid(alpha=0.2)
+
+    axes[0].set_ylabel(y_label)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 1.08), ncol=3, frameon=False)
+    fig.suptitle(title)
+    return save_figure(fig, out_path, dpi=350)
+
+
 def run(config: Optional[ExperimentConfig] = None, m_values: Optional[List[int]] = None) -> Dict[str, object]:
     cfg = config or ExperimentConfig()
     ctx = build_context(cfg)
@@ -229,6 +270,59 @@ def run(config: Optional[ExperimentConfig] = None, m_values: Optional[List[int]]
         title="MSJD by M and transition-matrix variant",
     )
 
+    energy_ok = all(np.isfinite(float(r.get("ess_mean_per_energy_lik", np.nan))) for r in rows)
+    wallclock_ok = all(np.isfinite(float(r.get("ess_mean_per_parallel_lik_step", np.nan))) for r in rows)
+
+    mess_raw_fig = _plot_mess_vs_m_by_variant(
+        rows,
+        out_figs / "cross_m_mess_ess_vs_M_raw.png",
+        key_x1="ess_x1",
+        key_x2="ess_x2",
+        key_mean="ess_mean",
+        title="MESS ESS vs M by transition-matrix variant",
+        y_label="ESS",
+    )
+
+    mess_energy_fig = None
+    if energy_ok:
+        mess_energy_fig = _plot_mess_vs_m_by_variant(
+            rows,
+            out_figs / "cross_m_mess_ess_vs_M_per_energy_lik_eval.png",
+            key_x1="ess_x1_per_energy_lik",
+            key_x2="ess_x2_per_energy_lik",
+            key_mean="ess_mean_per_energy_lik",
+            title="MESS ESS per likelihood evaluation (energy cost) vs M",
+            y_label="ESS / likelihood evaluation",
+        )
+
+    mess_wallclock_fig = None
+    if wallclock_ok:
+        mess_wallclock_fig = _plot_mess_vs_m_by_variant(
+            rows,
+            out_figs / "cross_m_mess_ess_vs_M_per_parallel_lik_step.png",
+            key_x1="ess_x1_per_parallel_lik_step",
+            key_x2="ess_x2_per_parallel_lik_step",
+            key_mean="ess_mean_per_parallel_lik_step",
+            title="MESS ESS per parallel likelihood step vs M",
+            y_label="ESS / parallel likelihood step",
+        )
+
+    availability_path = out_tables / "cross_m_mess_ess_vs_M_availability.json"
+    with open(availability_path, "w", encoding="utf-8") as handle:
+        json.dump(
+            {
+                "energy_normalization_available": bool(energy_ok),
+                "parallel_step_normalization_available": bool(wallclock_ok),
+                "reason_if_unavailable": (
+                    "missing mess_subiters_per_iter in one or more MESS chain artifacts"
+                    if not (energy_ok and wallclock_ok)
+                    else "all required normalized metrics available"
+                ),
+            },
+            handle,
+            indent=2,
+        )
+
     return {
         "rows": len(rows),
         "missing": missing,
@@ -237,6 +331,10 @@ def run(config: Optional[ExperimentConfig] = None, m_values: Optional[List[int]]
         "msjd_tex": str(msjd_tex.resolve()),
         "ess_fig": str(ess_fig.resolve()),
         "msjd_fig": str(msjd_fig.resolve()),
+        "mess_raw_fig": str(mess_raw_fig.resolve()),
+        "mess_energy_fig": str(mess_energy_fig.resolve()) if mess_energy_fig else None,
+        "mess_wallclock_fig": str(mess_wallclock_fig.resolve()) if mess_wallclock_fig else None,
+        "mess_availability": str(availability_path.resolve()),
     }
 
 

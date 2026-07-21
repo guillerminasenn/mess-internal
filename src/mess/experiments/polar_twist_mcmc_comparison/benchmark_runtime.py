@@ -41,7 +41,7 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:
             }
         )
 
-    out_path = ctx["reports_dir"] / "tables" / "runtime_summary.json"
+    out_path = ctx["estimations_dir"] / "tables" / "runtime_summary.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as handle:
         json.dump(rows, handle, indent=2)

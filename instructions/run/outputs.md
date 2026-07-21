@@ -12,6 +12,15 @@ Store outputs under deterministic run-specific directories so cache reuse is saf
 - `estimations/<dataset>/<data_id>/<sweep|fixed>/<run_id>/...`
 - `reports/<dataset>/<data_id>/<sweep|fixed>/<run_id>/...`
 
+## Reports directory materialization
+- Keep `run_id` deterministic even when report artifacts are not yet generated.
+- Create `reports/.../<run_id>/` lazily, only when writing significant report artifacts.
+- Significant report artifacts are:
+	- any file under `figures/`
+	- any LaTeX table file (`*.tex`) under `tables/`
+- Non-significant outputs (for example availability JSON, runtime JSON, metrics JSON, or manifests without figures/LaTeX tables) must be written under the matching `estimations/.../<run_id>/` subtree.
+- Cleanup policy: a `reports/.../<run_id>/` directory with no files under `figures/` and no `tables/*.tex` should be considered removable.
+
 ## Required artifacts
 - Save full run payload to `config.json` under the estimations directory.
 - Store chains, metrics, diagnostics, and derived tables under estimations.

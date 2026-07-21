@@ -42,6 +42,10 @@ Use this skill when the user asks to create a new experiment workflow in this re
    - producing reports
 4. Prefer backward-compatible wrappers only if user asks to preserve old entrypoints.
 5. Validate with `python -m compileall` and dry-run commands.
+6. If the experiment includes a MESS sweep over multiple `M` values, include by default:
+   - persisted per-iteration MESS sub-iteration counts in chain artifacts (`mess_subiters_per_iter`)
+   - metrics fields for ESS normalized by energy likelihood cost and parallel likelihood-step cost
+   - report plots for MESS-only ESS-vs-M (raw and normalized variants) with component panels.
 
 ## Conditional experiment handling (if/else)
 - If `instructions/experiments/<experiment>.md` already exists:

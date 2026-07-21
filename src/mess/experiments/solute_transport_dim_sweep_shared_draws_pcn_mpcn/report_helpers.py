@@ -26,7 +26,6 @@ from mess.problems.solute_transport import make_Astar_from_atrue, make_Astar_nn,
 def report_dirs(cfg: ExperimentConfig) -> Dict[str, Path]:
     ctx = build_context(cfg)
     fig_root = ctx["reports_dir"] / "figures"
-    fig_root.mkdir(parents=True, exist_ok=True)
     return {
         "reports_dir": ctx["reports_dir"],
         "legacy_output_dir": ctx["legacy_output_dir"],

@@ -37,7 +37,7 @@ def run(config: Optional[ExperimentConfig] = None) -> None:
         description="ESS/MSJD summary with per-parameter and mean diagnostics.",
     )
 
-    manifest_json, manifest_md = registry.write(ctx["reports_dir"] / "manifests", "metrics_workflow_artifacts")
+    manifest_json, manifest_md = registry.write(ctx["estimations_dir"] / "manifests", "metrics_workflow_artifacts")
     registry.add(manifest_json, "manifest", "Machine-readable list of metrics workflow artifacts.")
     registry.add(manifest_md, "manifest", "Human-readable metrics workflow artifact summary.")
     registry.print_summary()

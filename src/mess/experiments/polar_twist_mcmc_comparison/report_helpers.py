@@ -17,7 +17,6 @@ from mess.problems import build_polar_twist_problem
 def report_dirs(cfg: ExperimentConfig) -> Dict[str, Path]:
     ctx = build_context(cfg)
     fig_root = ctx["reports_dir"] / "figures"
-    fig_root.mkdir(parents=True, exist_ok=True)
     return {
         "reports_dir": ctx["reports_dir"],
         "estimations_dir": ctx["estimations_dir"],
@@ -65,14 +64,14 @@ def load_mess_ellipse_traces(cfg: ExperimentConfig, estimations_dir: Path, M: in
 
 def load_metrics_rows(cfg: ExperimentConfig):
     dirs = report_dirs(cfg)
-    path = dirs["reports_dir"] / "tables" / "metrics_summary.json"
+    path = dirs["estimations_dir"] / "tables" / "metrics_summary.json"
     with open(path, "r", encoding="utf-8") as handle:
         return json.load(handle), path
 
 
 def load_runtime_rows(cfg: ExperimentConfig):
     dirs = report_dirs(cfg)
-    path = dirs["reports_dir"] / "tables" / "runtime_summary.json"
+    path = dirs["estimations_dir"] / "tables" / "runtime_summary.json"
     with open(path, "r", encoding="utf-8") as handle:
         return json.load(handle), path
 

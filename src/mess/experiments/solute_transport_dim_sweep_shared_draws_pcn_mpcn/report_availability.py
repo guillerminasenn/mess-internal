@@ -66,7 +66,7 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:
         "legacy_output_dir": str(outdir.resolve()),
     }
 
-    report_path = ctx["reports_dir"] / "diagnostics" / "chain_availability.json"
+    report_path = ctx["legacy_output_dir"] / "diagnostics" / "chain_availability.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with open(report_path, "w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2)

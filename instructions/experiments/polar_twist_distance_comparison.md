@@ -86,9 +86,9 @@ Run workflow artifacts:
 - run manifest JSON/markdown
 
 Compute-metrics workflow artifacts:
-- `diagnostics/chain_availability.json`
-- `tables/runtime_summary.json`
-- `tables/metrics_summary.json`
+- `estimations/.../diagnostics/chain_availability.json`
+- `estimations/.../tables/runtime_summary.json`
+- `estimations/.../tables/metrics_summary.json`
 - metrics manifest JSON/markdown
 
 Report workflow artifacts:
@@ -111,6 +111,16 @@ Report workflow artifacts:
 ## Reuse and non-rerun policy
 - Uniform transition-matrix chains previously produced in `polar_twist_mcmc_comparison` must not be rerun by default.
 - This experiment reuses those chains when available and only generates uniform locally when `run_uniform_if_missing=True`.
+- For statistically identical reruns of locally generated chains (for example to enrich diagnostics storage only), keep the same deterministic `run_id` directory and replace chains in-place when replacement mode is requested.
+
+## MESS cost-normalized metrics dependency
+- ESS normalization by likelihood cost requires persisted per-iteration MESS sub-iteration counts (`mess_subiters_per_iter`) in chain artifacts.
+- If legacy chains are missing this field, normalized ESS metrics/plots should be marked unavailable rather than approximated from runtime.
+
+## Report run materialization rule
+- `reports/.../<run_id>/` is created lazily when significant report outputs are written.
+- Significant outputs for this experiment are files under `figures/` and LaTeX outputs under `tables/*.tex` (for example cross-M tables).
+- Availability/runtime/metrics JSON artifacts must remain under the matching `estimations/.../<run_id>/` subtree.
 
 ## Policy alignment
 This experiment follows:

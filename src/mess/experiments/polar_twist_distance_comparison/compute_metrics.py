@@ -25,6 +25,52 @@ def _msjd_per_dim(samples: np.ndarray) -> np.ndarray:
     return np.mean(jumps * jumps, axis=0)
 
 
+def _mess_cost_metrics(payload, cfg: ExperimentConfig, m: int, ess_vec: np.ndarray) -> Dict[str, float]:
+    unavailable = {
+        "mess_cost_metrics_available": False,
+        "mess_total_subiters_post_burn": float("nan"),
+        "mess_avg_subiters_per_iter_post_burn": float("nan"),
+        "mess_energy_lik_evals_post_burn": float("nan"),
+        "mess_wallclock_lik_steps_post_burn": float("nan"),
+        "ess_x1_per_energy_lik": float("nan"),
+        "ess_x2_per_energy_lik": float("nan"),
+        "ess_mean_per_energy_lik": float("nan"),
+        "ess_x1_per_parallel_lik_step": float("nan"),
+        "ess_x2_per_parallel_lik_step": float("nan"),
+        "ess_mean_per_parallel_lik_step": float("nan"),
+    }
+    if "mess_subiters_per_iter" not in payload:
+        return unavailable
+
+    subiters = np.asarray(payload["mess_subiters_per_iter"], dtype=float)
+    if subiters.ndim != 1 or subiters.size < int(cfg.n_iters):
+        return unavailable
+
+    post_burn_subiters = subiters[int(cfg.burn_in) : int(cfg.n_iters)]
+    if post_burn_subiters.size == 0:
+        return unavailable
+
+    total_subiters = float(np.sum(post_burn_subiters))
+    if not np.isfinite(total_subiters) or total_subiters <= 0.0:
+        return unavailable
+
+    wallclock_steps = total_subiters
+    energy_lik_evals = total_subiters * float(m)
+    return {
+        "mess_cost_metrics_available": True,
+        "mess_total_subiters_post_burn": total_subiters,
+        "mess_avg_subiters_per_iter_post_burn": float(np.mean(post_burn_subiters)),
+        "mess_energy_lik_evals_post_burn": energy_lik_evals,
+        "mess_wallclock_lik_steps_post_burn": wallclock_steps,
+        "ess_x1_per_energy_lik": float(ess_vec[0]) / energy_lik_evals if ess_vec.shape[0] > 0 else float("nan"),
+        "ess_x2_per_energy_lik": float(ess_vec[1]) / energy_lik_evals if ess_vec.shape[0] > 1 else float("nan"),
+        "ess_mean_per_energy_lik": float(np.nanmean(ess_vec)) / energy_lik_evals,
+        "ess_x1_per_parallel_lik_step": float(ess_vec[0]) / wallclock_steps if ess_vec.shape[0] > 0 else float("nan"),
+        "ess_x2_per_parallel_lik_step": float(ess_vec[1]) / wallclock_steps if ess_vec.shape[0] > 1 else float("nan"),
+        "ess_mean_per_parallel_lik_step": float(np.nanmean(ess_vec)) / wallclock_steps,
+    }
+
+
 def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:
     cfg = config or ExperimentConfig()
     ctx = build_context(cfg)
@@ -61,6 +107,8 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:
             dtype=float,
         )
         msjd_vec = _msjd_per_dim(samples)
+        with np.load(path) as payload:
+            cost_metrics = _mess_cost_metrics(payload, cfg, m, ess_vec)
 
         row = {
             "variant": variant,
@@ -75,9 +123,10 @@ def run(config: Optional[ExperimentConfig] = None) -> Dict[str, Any]:
             "msjd_mean": float(np.nanmean(msjd_vec)),
             "path": str(path.resolve()),
         }
+        row.update(cost_metrics)
         rows.append(row)
 
-    out_path = ctx["reports_dir"] / "tables" / "metrics_summary.json"
+    out_path = ctx["estimations_dir"] / "tables" / "metrics_summary.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as handle:
         json.dump(rows, handle, indent=2)
