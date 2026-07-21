@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -36,6 +36,69 @@ def _first_existing_path(candidates: List[Path]) -> Optional[Path]:
         if path.exists():
             return path
     return None
+
+
+def _latest_run_dir(root: Path) -> Optional[Path]:
+    if not root.exists():
+        return None
+    candidates = [p for p in root.glob("data_h*/fixed/run_h*") if p.is_dir()]
+    if not candidates:
+        return None
+    candidates.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return candidates[0]
+
+
+def latest_ep_run_dir(cfg: ExperimentConfig) -> Optional[Path]:
+    dirs = report_dirs(cfg)
+    roots = source_roots(cfg, repo_root=dirs["repo_root"])
+    return _latest_run_dir(roots["ep_estimations"])
+
+
+def load_ep_grouped_chains(cfg: ExperimentConfig) -> Dict[Tuple[str, int, int], List[np.ndarray]]:
+    """Load EP experiment chains keyed by (variant, M, replicate)."""
+    run_dir = latest_ep_run_dir(cfg)
+    out: Dict[Tuple[str, int, int], List[np.ndarray]] = {}
+    if run_dir is None:
+        return out
+
+    mess_candidates = sorted(run_dir.glob("chain_mess_M*_rep*.npz"))
+    ep_m_set = set(int(v) for v in cfg.ep_m_list)
+    for path in mess_candidates:
+        stem = path.stem
+        try:
+            tail = stem.split("chain_mess_M", 1)[1]
+            m_str, rep_str = tail.split("_rep", 1)
+            m = int(m_str)
+            rep = int(rep_str)
+        except ValueError:
+            continue
+        if m not in ep_m_set:
+            continue
+        with np.load(path) as payload:
+            out[("mess", int(m), int(rep))] = [np.asarray(payload["chain"], dtype=float)]
+
+    ep_candidates = sorted(run_dir.glob("chain_ep_ess_M*_rep*_chain*.npz"))
+    for path in ep_candidates:
+        stem = path.stem
+        try:
+            tail = stem.split("chain_ep_ess_M", 1)[1]
+            m_str, rem = tail.split("_rep", 1)
+            rep_str, _ = rem.split("_chain", 1)
+            m = int(m_str)
+            rep = int(rep_str)
+        except ValueError:
+            continue
+        if m not in ep_m_set:
+            continue
+        key = ("ep_ess", int(m), int(rep))
+        if key not in out:
+            out[key] = []
+        with np.load(path) as payload:
+            out[key].append(np.asarray(payload["chain"], dtype=float))
+
+    for key, chains in out.items():
+        chains.sort(key=lambda arr: arr.shape[0], reverse=True)
+    return out
 
 
 def resolve_sources(cfg: ExperimentConfig) -> Dict[str, object]:
@@ -108,6 +171,25 @@ def resolve_sources(cfg: ExperimentConfig) -> Dict[str, object]:
                 roots["dist_estimations"] / run / f"chain_mess_lp_angular_M{int(m)}.npz" for run in dist_runs
             ],
         })
+
+    ep_run_dir = latest_ep_run_dir(cfg)
+    if cfg.include_ep and ep_run_dir is not None:
+        rep = int(cfg.ep_replicate_for_trace)
+        for m in cfg.ep_m_list:
+            specs.append({
+                "label": f"EP source MESS (M={int(m)}, rep={rep})",
+                "group": "ep_mess",
+                "source": "ep",
+                "kind": "ep_mess",
+                "candidates": [ep_run_dir / f"chain_mess_M{int(m)}_rep{rep:03d}.npz"],
+            })
+            specs.append({
+                "label": f"EP source ESS group mean (M={int(m)}, rep={rep})",
+                "group": "ep_ess",
+                "source": "ep",
+                "kind": "ep_ess",
+                "candidates": [ep_run_dir / f"chain_ep_ess_M{int(m)}_rep{rep:03d}_chain000.npz"],
+            })
         specs.append({
             "label": f"MESS euclidean (M={int(m)})",
             "group": "mess_euclidean",
@@ -130,6 +212,7 @@ def resolve_sources(cfg: ExperimentConfig) -> Dict[str, object]:
         "roots": {k: str(v) for k, v in roots.items()},
         "mcmc_runs": mcmc_runs,
         "distance_runs": dist_runs,
+        "ep_run_dir": str(ep_run_dir) if ep_run_dir is not None else None,
     }
 
 

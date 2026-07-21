@@ -32,6 +32,13 @@ Use this skill when the user asks to compute metrics after chains are available.
 - Read expected metric artifacts from `instructions/experiments/<experiment>.md`.
 - Validate presence of diagnostics/tables/manifests declared there.
 - If the experiment includes MESS-over-M sweeps, verify rows expose MESS cost fields and normalized ESS fields when `mess_subiters_per_iter` exists; otherwise verify explicit unavailability flags/NaNs are present.
+- If the experiment includes EP grouped ESS chains:
+  - Verify per-chain metrics and per-replicate aggregation tables both exist.
+  - Verify EP raw ESS is computed as the sum of ESS over independent chains within each replicate.
+  - Verify by-M EP summaries average replicate-level raw ESS over `B` replicates.
+  - Verify EP normalization formulas:
+    - per parallel likelihood step uses summed chain likelihood steps divided by `M` cores.
+    - per energy likelihood evaluation uses summed chain likelihood evaluations without core division.
 
 ## Solute transport branch
 - If `<experiment>` is `solute_transport_dim_sweep_shared_draws_pcn_mpcn`:

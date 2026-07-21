@@ -11,11 +11,14 @@ In scope:
 - reuse existing chains from:
   - `reports/polar_twist_mcmc_comparison`
   - `reports/polar_twist_distance_comparison`
+  - `reports/polar_twist_ep`
 - no new chain generation
 - two warmup traceplot figures:
   - one for `x1`
   - one for `x2`
 - each figure uses one subplot per algorithm variant found
+- EP-source warmup overlays for MESS vs EP-ESS
+- running-MSE warmup plots for `x1` and `x2` using EP and MESS chains
 
 Out of scope:
 - re-running MCMC samplers
@@ -53,6 +56,8 @@ Reports:
   - `python -m mess.experiments.polar_twist_convergence.report_workflow`
 - subset module:
   - `python -m mess.experiments.polar_twist_convergence.traceplots`
+  - `python -m mess.experiments.polar_twist_convergence.ep_traceplots`
+  - `python -m mess.experiments.polar_twist_convergence.convergence_mse`
 
 ## Artifact Expectations
 - diagnostics:
@@ -62,6 +67,10 @@ Reports:
 - figures:
   - `reports/.../figures/warmup_traceplots/traceplots_warmup_x1.png`
   - `reports/.../figures/warmup_traceplots/traceplots_warmup_x2.png`
+  - `reports/.../figures/warmup_traceplots/traceplots_ep_warmup_x1.png`
+  - `reports/.../figures/warmup_traceplots/traceplots_ep_warmup_x2.png`
+  - `reports/.../figures/warmup_mse/running_mse_x1.png`
+  - `reports/.../figures/warmup_mse/running_mse_x2.png`
 
 ## Notes
 - Missing source chains are shown in subplot panels as `missing chain`.

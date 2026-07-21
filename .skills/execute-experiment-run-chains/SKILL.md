@@ -55,6 +55,16 @@ Use this skill when the user asks to run (or dry-run) chain generation for any e
 - Output includes missing/assigned task counts.
 - Run summary prints estimations/reports/legacy output directories.
 - Run manifest files are generated under reports manifests directory.
+- For EP grouped-chain experiments, validate task cardinality by M:
+  - MESS tasks: `B` chains per `M`.
+  - EP tasks: `B * M` chains per `M`.
+  - If start-point coupling is required by spec, verify diagnostics include persisted start points and the replicate-aligned first EP chain starts.
+
+## EP grouped-chain branch
+- If `<experiment>` uses EP independent-chain groups (for example `polar_twist_ep`):
+  - Run a dry-run first and report expected counts for `mess` and `ep_ess` tasks separately.
+  - Keep `grid-count` and `grid-index` explicit.
+  - Confirm chain metadata includes `variant`, `M`, `replicate`, and `chain_idx` so metrics can reconstruct groups.
 
 ## Safety
 - Never modify `.npz` content.

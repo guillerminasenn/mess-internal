@@ -57,6 +57,12 @@ Use this skill when the user asks for figures/checklists/reports from an experim
     - `ellipse_diagnostics` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ellipse_diagnostics`
     - `mess_ess_vs_m` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.mess_ess_vs_m_plots`
     - `parity_checklist` -> `python -m <repo>.experiments.polar_twist_mcmc_comparison.report_parity_checklist`
+- If `<experiment>` is `polar_twist_ep`:
+  - Full workflow:
+    - `python -m <repo>.experiments.polar_twist_ep.report_workflow`
+  - Supported subsets:
+    - `ess_msjd` -> `python -m <repo>.experiments.polar_twist_ep.ess_vs_m_plots`
+    - `parity_checklist` -> `python -m <repo>.experiments.polar_twist_ep.report_parity_checklist`
 - Else:
   - Use only report modules declared in `instructions/experiments/<experiment>.md`.
 
@@ -66,6 +72,8 @@ Use this skill when the user asks for figures/checklists/reports from an experim
   - If missing, run the metrics workflow for `<experiment>` before report plotting.
 - If `ellipse_diagnostics` is requested:
   - Ensure required MESS trace sidecars exist; otherwise ask user to re-run chain generation with trace capture enabled.
+- If the request includes convergence-phase EP diagnostics for polar twist:
+  - Run the `polar_twist_convergence` report workflow in addition to `polar_twist_ep` report workflow, because warmup trace/MSE outputs are owned by the convergence package.
 
 ## Related skill handoff
 - If the user specifically requests MESS ellipse playback plots, prefer invoking `plot-ellipses`.
