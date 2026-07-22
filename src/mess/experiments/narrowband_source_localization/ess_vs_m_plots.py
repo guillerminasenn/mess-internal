@@ -49,7 +49,7 @@ def _plot_two_curve_three_panel(
     for ax, key, subtitle in zip(
         axes,
         (key_q1, key_q2, key_ll),
-        (r"$q_1$", r"$q_2$", r"$\log L$"),
+        (r"$q_1$", r"$q_2$", r"$\log L(z_t)=\log p(y\mid z_t)$"),
     ):
         ax.plot(m_vals, _series(left_rows, key), marker="o", linewidth=1.5, color="tab:blue", label=left_label)
         ax.plot(m_vals, _series(right_rows, key), marker="s", linewidth=1.5, color="tab:orange", label=right_label)
