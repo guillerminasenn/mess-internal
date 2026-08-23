@@ -4,3 +4,4 @@ reports/*
 .venv-*/
 .env/
 .ipynb_checkpoints/
+!reports/presentations/siam_uq_2026
