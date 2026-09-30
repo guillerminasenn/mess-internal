@@ -1,7 +1,9 @@
 estimations/
-reports/*
 .venv/
 .venv-*/
 .env/
 .ipynb_checkpoints/
-!reports/presentations/siam_uq_2026
+reports/*
+!reports/presentations/
+reports/presentations/*
+!reports/presentations/siam_uq_2026/

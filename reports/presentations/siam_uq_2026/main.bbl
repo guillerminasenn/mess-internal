@@ -1,0 +1,54 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Cotter, Roberts, Stuart, and White}{Cotter
+  et~al.}{2013}]{Cotter2013}
+Cotter, S.~L., G.~O. Roberts, A.~M. Stuart, and D.~White (2013).
+\newblock {MCMC} {M}ethods for {F}unctions: {M}odifying {O}ld {A}lgorithms to
+  {M}ake {T}hem {F}aster.
+\newblock {\em Statistical Science\/}~{\em 28\/}(3), 424--446.
+
+\bibitem[\protect\citeauthoryear{Dashti and Stuart}{Dashti and
+  Stuart}{2013}]{Dashti2013TheBA}
+Dashti, M. and A.~M. Stuart (2013).
+\newblock The bayesian approach to inverse problems.
+\newblock {\em arXiv: Probability\/}.
+
+\bibitem[\protect\citeauthoryear{Glatt-Holtz, Holbrook, Krometis, and
+  Mondaini}{Glatt-Holtz et~al.}{2024}]{GlattHoltz2024}
+Glatt-Holtz, N.~E., A.~J. Holbrook, J.~A. Krometis, and C.~F. Mondaini (2024).
+\newblock Parallel {MCMC} {A}lgorithms: {T}heoretical {F}oundations,
+  {A}lgorithm {D}esign, {C}ase {S}tudies.
+\newblock {\em Transactions of Mathematics and Its Applications\/}~{\em
+  8\/}(2).
+
+\bibitem[\protect\citeauthoryear{Hastings}{Hastings}{1970}]{Hastings1970}
+Hastings, W.~K. (1970).
+\newblock Monte carlo sampling methods using markov chains and their
+  applications.
+\newblock {\em Biometrika\/}~{\em 57\/}(1), 97--109.
+
+\bibitem[\protect\citeauthoryear{Murray, Adams, and MacKay}{Murray
+  et~al.}{2010}]{Murray2010}
+Murray, I., R.~P. Adams, and D.~J.~C. MacKay (2010).
+\newblock Elliptical {S}lice {S}ampling.
+\newblock In {\em Proc. of the 13th AISTATS}, Volume~9 of {\em PMLR}, pp.\
+  541--548.
+
+\bibitem[\protect\citeauthoryear{Neal}{Neal}{1999}]{Neal1999}
+Neal, R.~M. (1999).
+\newblock Regression and {C}lassification {U}sing {G}aussian {P}rocess
+  {P}riors.
+\newblock In {\em Bayesian Statistics 6: Proc. of the Sixth Valencia
+  International Meeting June 6-10, 1998}. Oxford University Press.
+
+\bibitem[\protect\citeauthoryear{Neal}{Neal}{2003}]{Neal2003}
+Neal, R.~M. (2003).
+\newblock Slice {S}ampling.
+\newblock {\em The Annals of Statistics\/}~{\em 31\/}(3), 705--741.
+
+\bibitem[\protect\citeauthoryear{Stuart}{Stuart}{2010}]{stuart2010inverse}
+Stuart, A.~M. (2010).
+\newblock Inverse problems: {A} {B}ayesian perspective.
+\newblock {\em Acta Numerica\/}~{\em 19}, 451--559.
+
+\end{thebibliography}

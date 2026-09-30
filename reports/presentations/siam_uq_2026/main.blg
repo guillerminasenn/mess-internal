@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: chicago.bst
+Database file #1: references.bib
+Warning--no number and no volume in Dashti2013TheBA
+Warning--page numbers missing in Dashti2013TheBA
+Warning--page numbers missing in GlattHoltz2024
+You've used 8 entries,
+            2861 wiz_defined-function locations,
+            671 strings with 6166 characters,
+and the built_in function-call counts, 5440 in all, are:
+= -- 458
+> -- 373
+< -- 2
++ -- 108
+- -- 126
+* -- 480
+:= -- 988
+add.period$ -- 25
+call.type$ -- 8
+change.case$ -- 57
+chr.to.int$ -- 8
+cite$ -- 11
+duplicate$ -- 159
+empty$ -- 346
+format.name$ -- 142
+if$ -- 1014
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 8
+newline$ -- 43
+num.names$ -- 80
+pop$ -- 43
+preamble$ -- 1
+purify$ -- 105
+quote$ -- 0
+skip$ -- 155
+stack$ -- 0
+substring$ -- 291
+swap$ -- 55
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 160
+warning$ -- 3
+while$ -- 79
+width$ -- 0
+write$ -- 109
+(There were 3 warnings)
